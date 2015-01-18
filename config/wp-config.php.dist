@@ -35,12 +35,15 @@ define('DB_COLLATE', '');
 
 define('API_KEY', '@apikey@');
 
+define('WP_ALLOW_MULTISITE', true);
+
 define('MULTISITE', @multisite@);
-define('SUBDOMAIN_INSTALL', true);
-define('DOMAIN_CURRENT_SITE', '@wordpress_url@');
-define('PATH_CURRENT_SITE', '/');
-define('SITE_ID_CURRENT_SITE', 1);
-define('BLOG_ID_CURRENT_SITE', 1);
+//@ms define('SUBDOMAIN_INSTALL', true);
+//@ms define('DOMAIN_CURRENT_SITE', '@wordpress_url@');
+//@ms define('PATH_CURRENT_SITE', '/');
+//@ms define('SITE_ID_CURRENT_SITE', 1);
+//@ms define('BLOG_ID_CURRENT_SITE', 1);
+
 /**#@+
  * Authentication Unique Keys and Salts.
  *
