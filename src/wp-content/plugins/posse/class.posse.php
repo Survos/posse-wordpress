@@ -34,6 +34,9 @@ class Posse
         add_action('parse_request', ['Posse', 'posse_custom_requests']);
         add_filter('rewrite_rules_array', ['Posse', 'posse_theme_functionality_urls']);
         self::initSymfony();
+        require_once(POSSE__PLUGIN_DIR.'shortcodes.php');
+        add_shortcode('project_title', 'posse_project_title');
+        add_shortcode('jobs', 'posse_jobs');
 
     }
 
@@ -62,20 +65,21 @@ class Posse
         /** @var \Posse\SurveyBundle\Services\ProjectManager $pm */
         $pm = $sfContainer->get('survos_survey.project_manager');
 
-        $site = get_current_site();
+        $site = get_blog_details();
         $parts = explode('.', $site->domain);
         $projectCode = reset($parts);
         $project = $pm->getProjectByName($projectCode);
+
         if ($project) {
             $pm->setProject($project);
             self::symfony($sfContainer);
         }
 
-//            $sfRequest = Request::createFromGlobals();
-//            $sfResponse = $sfKernel->handle($sfRequest);
-//            $sfResponse->send();
+//      $sfRequest = Request::createFromGlobals();
+//      $sfResponse = $sfKernel->handle($sfRequest);
+//      $sfResponse->send();
 //
-//            $sfKernel->terminate($sfRequest, $sfResponse);
+//      $sfKernel->terminate($sfRequest, $sfResponse);
     }
 
     /**
@@ -88,7 +92,6 @@ class Posse
     private static function symfony($id)
     {
         static $container;
-
         if ($id instanceof ContainerInterface) {
             $container = $id;
             return;
@@ -98,6 +101,14 @@ class Posse
             return null;
         }
         return $container->get($id);
+    }
+
+    /**
+     * get project manager service
+     */
+    public static function getProjectManager()
+    {
+        return self::symfony('survos_survey.project_manager');
     }
 
     public static function posse_custom_query_vars($vars)
@@ -112,9 +123,11 @@ class Posse
         return $vars;
     }
 
+    /**
+     * add new rewrite rule to handle api calls from symfony
+     */
     public static function posse_theme_functionality_urls()
     {
-
         add_rewrite_rule(
             '^api/?',
             'index.php',
