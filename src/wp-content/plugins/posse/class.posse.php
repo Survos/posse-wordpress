@@ -1,5 +1,9 @@
 <?php
 
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Debug\Debug;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Class Posse
  */
@@ -17,6 +21,7 @@ class Posse
         if (!self::$initiated) {
             self::init_hooks();
         }
+
     }
 
     /**
@@ -26,11 +31,65 @@ class Posse
     {
         self::$initiated = true;
         add_filter('query_vars', ['Posse', 'posse_custom_query_vars']);
-        add_action('init', ['Posse', 'posse_theme_functionality_urls']);
         add_action('parse_request', ['Posse', 'posse_custom_requests']);
+        add_filter('rewrite_rules_array', ['Posse', 'posse_theme_functionality_urls']);
+        self::initSymfony();
 
     }
 
+    public static function initSymfony()
+    {
+        //            require_once( ABSPATH . 'wp-includes/ms-functions.php' );
+
+//            $loader = require_once __DIR__.'../../../../../../app/bootstrap.php.cache';
+//
+//            // Load application kernel
+//            require_once __DIR__.'../../../../../../app/AppKernel.php';
+//
+//            $sfKernel = new AppKernel('dev', true);
+//            $sfKernel->loadClassCache();
+//            $sfKernel->boot();
+//
+//            // Add Symfony container as a global variable to be used in Wordpress
+//            $sfContainer = $sfKernel->getContainer();
+//
+//            if (true === $sfContainer->getParameter('kernel.debug', false)) {
+//                Debug::enable();
+//            }
+//
+//            $sfContainer->enterScope('request');
+//            $pm = $sfContainer->get('survos_survey.project_manager');
+        var_dump(get_current_site());
+//            var_dump($pm->getProject());
+        die();
+
+        self::symfony($sfContainer);
+
+//            $sfRequest = Request::createFromGlobals();
+//            $sfResponse = $sfKernel->handle($sfRequest);
+//            $sfResponse->send();
+//
+//            $sfKernel->terminate($sfRequest, $sfResponse);
+    }
+
+    /**
+     * Retrieves or sets the Symfony Dependency Injection container
+     *
+     * @param ContainerInterface|string $id
+     *
+     * @return mixed
+     */
+    private static function symfony($id)
+    {
+        static $container;
+
+        if ($id instanceof ContainerInterface) {
+            $container = $id;
+            return;
+        }
+
+        return $container->get($id);
+    }
 
     public static function posse_custom_query_vars($vars)
     {
@@ -52,7 +111,6 @@ class Posse
             'index.php',
             'top'
         );
-
     }
 
     /**
@@ -61,7 +119,6 @@ class Posse
      */
     public static function posse_custom_requests($wp)
     {
-
         $valid_actions = ['possecreateblog', 'possecheckblog'];
 
         if (
@@ -79,7 +136,6 @@ class Posse
             }
 
         }
-
     }
 
     /**
@@ -133,19 +189,20 @@ class Posse
         die(json_encode($result));
     }
 
-
     /**
      * Attached to activate_{ plugin_basename( __FILES__ ) } by register_activation_hook()
      * @static
      */
-    public static function plugin_activation() {
+    public static function plugin_activation()
+    {
     }
 
     /**
      * Removes all connection options
      * @static
      */
-    public static function plugin_deactivation( ) {
+    public static function plugin_deactivation()
+    {
         //tidy up
     }
 }
