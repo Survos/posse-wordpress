@@ -41,29 +41,35 @@ class Posse
     {
         //            require_once( ABSPATH . 'wp-includes/ms-functions.php' );
 
-//            $loader = require_once __DIR__.'../../../../../../app/bootstrap.php.cache';
-//
-//            // Load application kernel
-//            require_once __DIR__.'../../../../../../app/AppKernel.php';
-//
-//            $sfKernel = new AppKernel('dev', true);
-//            $sfKernel->loadClassCache();
-//            $sfKernel->boot();
-//
-//            // Add Symfony container as a global variable to be used in Wordpress
-//            $sfContainer = $sfKernel->getContainer();
-//
-//            if (true === $sfContainer->getParameter('kernel.debug', false)) {
-//                Debug::enable();
-//            }
-//
-//            $sfContainer->enterScope('request');
-//            $pm = $sfContainer->get('survos_survey.project_manager');
-        var_dump(get_current_site());
-//            var_dump($pm->getProject());
-        die();
+        $loader = require_once __DIR__.'../../../../../../app/bootstrap.php.cache';
 
-        self::symfony($sfContainer);
+        // Load application kernel
+        require_once __DIR__.'../../../../../../app/AppKernel.php';
+
+        $sfKernel = new AppKernel('dev', true);
+        $sfKernel->loadClassCache();
+        $sfKernel->boot();
+
+        // Add Symfony container as a global variable to be used in Wordpress
+        $sfContainer = $sfKernel->getContainer();
+
+        if (true === $sfContainer->getParameter('kernel.debug', false)) {
+            Debug::enable();
+        }
+
+        $sfContainer->enterScope('request');
+
+        /** @var \Posse\SurveyBundle\Services\ProjectManager $pm */
+        $pm = $sfContainer->get('survos_survey.project_manager');
+
+        $site = get_current_site();
+        $parts = explode('.', $site->domain);
+        $projectCode = reset($parts);
+        $project = $pm->getProjectByName($projectCode);
+        if ($project) {
+            $pm->setProject($project);
+            self::symfony($sfContainer);
+        }
 
 //            $sfRequest = Request::createFromGlobals();
 //            $sfResponse = $sfKernel->handle($sfRequest);
@@ -88,6 +94,9 @@ class Posse
             return;
         }
 
+        if (!$container) {
+            return null;
+        }
         return $container->get($id);
     }
 
