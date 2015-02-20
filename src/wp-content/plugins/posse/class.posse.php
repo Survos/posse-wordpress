@@ -117,6 +117,14 @@ class Posse
     /**
      * get project manager service
      */
+    public static function renderTemplate($template, $atts = [])
+    {
+        return self::symfony('twig')->render($template, $atts);
+    }
+
+    /**
+     * get project manager service
+     */
     public static function getJob($code)
     {
         return self::symfony('survos.service.job')->getJob($code);
