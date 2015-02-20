@@ -37,7 +37,9 @@ class Posse
         require_once(POSSE__PLUGIN_DIR.'shortcodes.php');
         add_shortcode('project', 'posse_project_attribute');
         add_shortcode('jobs', 'posse_jobs');
+        add_shortcode('job', 'posse_job');
         add_shortcode('surveys', 'posse_surveys');
+        add_shortcode('survey', 'posse_survey');
 
     }
 
@@ -110,6 +112,22 @@ class Posse
     public static function getProjectManager()
     {
         return self::symfony('survos_survey.project_manager');
+    }
+
+    /**
+     * get project manager service
+     */
+    public static function getJob($code)
+    {
+        return self::symfony('survos.service.job')->getJob($code);
+    }
+
+    /**
+     * get project manager service
+     */
+    public static function getSurvey($code)
+    {
+        return self::symfony('survos.service.survey')->getSurvey($code);
     }
 
     public static function posse_custom_query_vars($vars)

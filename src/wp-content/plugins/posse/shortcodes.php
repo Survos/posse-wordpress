@@ -49,6 +49,7 @@ function posse_jobs($atts)
                 'after_list'  => '</ul>',
                 'before_item' => '<li>',
                 'after_item'  => '</li>',
+                'template'    => 'code' // template => code | full
             ],
             $atts
         )
@@ -67,7 +68,11 @@ function posse_jobs($atts)
     <?php /** @var \Posse\SurveyBundle\Model\Job\Job $job */
     foreach ($jobs as $job): ?>
         <?php echo $before_item ?>
-        <?php echo $job->getCode() ?>
+        <?php if ($template == 'code'): ?>
+            <?php echo $job->getShortCode() ?>
+        <?php elseif ($template == 'full'): ?>
+            <?php echo do_shortcode('[job short_code="'.$job->getShortCode().'"]') ?>
+        <?php endif ?>
         <?php echo $after_item ?>
     <?php endforeach ?>
     <?php echo $after_list ?>
@@ -93,10 +98,12 @@ function posse_surveys($atts)
                 'after_list'  => '</ul>',
                 'before_item' => '<li>',
                 'after_item'  => '</li>',
+                'template'    => 'code' // template => code | full
             ],
             $atts
         )
     );
+
     /** @var \Posse\SurveyBundle\Model\Project $project */
     $project = Posse::getProjectManager()->getProject();
     if (!$project) {
@@ -111,10 +118,96 @@ function posse_surveys($atts)
     <?php /** @var \Posse\SurveyBundle\Model\Job\Job $job */
     foreach ($forms as $form): ?>
         <?php echo $before_item ?>
-        <?php echo $form->getCode() ?>
+        <?php if ($template == 'code'): ?>
+            <?php echo $form->getCode() ?>
+        <?php elseif ($template == 'full'): ?>
+            <?php echo do_shortcode('[survey code="'.$form->getCode().'"]') ?>
+        <?php endif ?>
         <?php echo $after_item ?>
     <?php endforeach ?>
     <?php echo $after_list ?>
+
+    <?php
+    $return = ob_get_clean();
+
+    return $return;
+}
+
+/**
+ * return  project form
+ * @param $atts
+ * @return string
+ */
+function posse_job($atts)
+{
+    extract(
+        shortcode_atts(
+            [
+                'short_code' => ''
+            ],
+            $atts
+        )
+    );
+    /** @var \Posse\SurveyBundle\Model\Project $project */
+    $project = Posse::getProjectManager()->getProject();
+    if (!$project) {
+        echo "!Project not found!";
+    }
+
+    if (!$short_code) {
+        echo "!no code given!";
+    }
+
+    ob_start();
+
+    /** @var \Posse\SurveyBundle\Model\Job\Job $job */
+    $job = Posse::getJob($short_code);
+    ?>
+
+    <h3><?php echo $job->getTitle() ?></h3>
+    <small><?php echo $job->getShortCode() ?></small>
+    <p><?php echo ($job->getSurvey() && $job->getSurvey()->getDescription()) ? $job->getSurvey()->getDescription() : 'No description' ?></p>
+    <?php
+    $return = ob_get_clean();
+
+    return $return;
+}
+
+/**
+ * return  project form
+ * @param $atts
+ * @return string
+ */
+function posse_survey($atts)
+{
+    extract(
+        shortcode_atts(
+            [
+                'code' => ''
+            ],
+            $atts
+        )
+    );
+    /** @var \Posse\SurveyBundle\Model\Project $project */
+    $project = Posse::getProjectManager()->getProject();
+    if (!$project) {
+        echo "!Project not found!";
+    }
+
+    if (!$code) {
+        echo "!no code given!";
+    }
+
+    ob_start();
+
+    /** @var \Posse\SurveyBundle\Model\Survey\Survey $survey */
+    $survey = Posse::getSurvey($code);
+    ?>
+
+    <?php if ($survey): ?>
+    <h3><?php echo $survey->getTitle() ?></h3>
+    <p><?php echo $survey->getDescription() ? $survey->getDescription() : 'No description' ?></p>
+<?php endif ?>
 
     <?php
     $return = ob_get_clean();
