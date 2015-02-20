@@ -35,8 +35,9 @@ class Posse
         add_filter('rewrite_rules_array', ['Posse', 'posse_theme_functionality_urls']);
         self::initSymfony();
         require_once(POSSE__PLUGIN_DIR.'shortcodes.php');
-        add_shortcode('project_title', 'posse_project_title');
+        add_shortcode('project', 'posse_project_attribute');
         add_shortcode('jobs', 'posse_jobs');
+        add_shortcode('surveys', 'posse_surveys');
 
     }
 

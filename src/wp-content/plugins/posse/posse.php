@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Posse integration
  * Plugin URI:
- * Description: A brief description of the plugin.
+ * Description: Allows easy integration with Posse project
  * Version: 1.0.0
  * Author: Piotr Grochowski <piogrek@gmail.com>
  * Author URI:
