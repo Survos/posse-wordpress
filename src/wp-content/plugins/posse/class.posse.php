@@ -35,11 +35,13 @@ class Posse
         add_filter('rewrite_rules_array', ['Posse', 'posse_theme_functionality_urls']);
         self::initSymfony();
         require_once(POSSE__PLUGIN_DIR.'shortcodes.php');
+        require_once(POSSE__PLUGIN_DIR.'shortcodes/ct.php');
         add_shortcode('project', 'posse_project_attribute');
         add_shortcode('jobs', 'posse_jobs');
         add_shortcode('job', 'posse_job');
         add_shortcode('surveys', 'posse_surveys');
         add_shortcode('survey', 'posse_survey');
+        add_shortcode('ct', 'posse_ct');
 
     }
 
@@ -67,6 +69,9 @@ class Posse
 
         /** @var \Posse\SurveyBundle\Services\ProjectManager $pm */
         $pm = $sfContainer->get('survos_survey.project_manager');
+        $sfRequest = Request::createFromGlobals();
+        $sfResponse = $sfKernel->handle($sfRequest);
+//        $sfResponse->send();
 
         $site = get_blog_details();
         $parts = explode('.', $site->domain);
@@ -128,6 +133,15 @@ class Posse
     public static function getJob($code)
     {
         return self::symfony('survos.service.job')->getJob($code);
+    }
+    /**
+     * get ct object
+     */
+    public static function getCt($code)
+    {
+        $ct = self::symfony('survos.clinical_trials')->getCt($code);
+        $html = self::symfony('templating')->render("SurvosClinicalTrialsBundle:Trial:_ct_view.html.twig", ['ct' => $ct]);
+        return $html;
     }
 
     /**
