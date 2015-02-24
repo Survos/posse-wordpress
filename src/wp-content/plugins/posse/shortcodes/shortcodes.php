@@ -18,7 +18,6 @@ function posse_project_attribute($atts)
     );
 
     ob_start();
-
     /** @var \Posse\SurveyBundle\Model\Project $project */
     $project = Posse::getProjectManager()->getProject();
 
@@ -104,15 +103,9 @@ function posse_surveys($atts)
         )
     );
 
-    /** @var \Posse\SurveyBundle\Model\Project $project */
-    $project = Posse::getProjectManager()->getProject();
-    if (!$project) {
-        echo "!Project not found!";
-    }
-
     ob_start();
 
-    $forms = $project->getSurveys();
+    $forms = Posse::getSurveys();
     ?>
     <?php echo $before_list ?>
     <?php /** @var \Posse\SurveyBundle\Model\Job\Job $job */
