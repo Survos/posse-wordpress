@@ -5,7 +5,7 @@ module.exports = function (grunt) {
             dev: {
                 options: {}
             }
-        },
+        }
     });
 
     grunt.loadNpmTasks('grunt-git');
