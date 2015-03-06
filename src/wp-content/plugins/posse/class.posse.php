@@ -92,7 +92,7 @@ class Posse
             $current_user = wp_get_current_user();
             $email = $current_user->get('user_email');
             $symfonyUser = self::getSymfonyUser();
-            if (!$symfonyUser) {
+            if (!$symfonyUser || $symfonyUser == 'anon.') {
                 self::getWpService()->authenticateUserByEmail($email);
             }
         }
