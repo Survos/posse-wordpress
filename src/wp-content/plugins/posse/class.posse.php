@@ -38,6 +38,7 @@ class Posse
         require_once(POSSE__PLUGIN_DIR.'shortcodes/ct.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/user.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/projects.php');
+        require_once(POSSE__PLUGIN_DIR.'shortcodes/login_form.php');
         add_shortcode('project', 'posse_project_attribute');
         add_shortcode('projects', 'posse_projects');
         add_shortcode('jobs', 'posse_jobs');
@@ -46,7 +47,7 @@ class Posse
         add_shortcode('survey', 'posse_survey');
         add_shortcode('ct', 'posse_ct');
         add_shortcode('user', 'posse_user');
-
+        add_shortcode('login_form', 'posse_login_form');
     }
 
     public static function initSymfony()
