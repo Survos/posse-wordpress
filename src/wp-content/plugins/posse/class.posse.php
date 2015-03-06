@@ -34,8 +34,9 @@ class Posse
         add_action('parse_request', ['Posse', 'posse_custom_requests']);
         add_filter('rewrite_rules_array', ['Posse', 'posse_theme_functionality_urls']);
         self::initSymfony();
-        require_once(POSSE__PLUGIN_DIR.'shortcodes.php');
+        require_once(POSSE__PLUGIN_DIR.'shortcodes/shortcodes.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/ct.php');
+        require_once(POSSE__PLUGIN_DIR.'shortcodes/user.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/projects.php');
         add_shortcode('project', 'posse_project_attribute');
         add_shortcode('projects', 'posse_projects');
@@ -44,6 +45,7 @@ class Posse
         add_shortcode('surveys', 'posse_surveys');
         add_shortcode('survey', 'posse_survey');
         add_shortcode('ct', 'posse_ct');
+        add_shortcode('user', 'posse_user');
 
     }
 
@@ -84,6 +86,19 @@ class Posse
             $pm->setProject($project);
         }
 
+        // try to authenticate user
+        if (is_user_logged_in()) {
+            /** @var WP_User $current_user */
+            $current_user = wp_get_current_user();
+            $email = $current_user->get('user_email');
+            $symfonyUser = self::getSymfonyUser();
+            if (!$symfonyUser || $symfonyUser == 'anon.') {
+                self::getWpService()->authenticateUserByEmail($email);
+            }
+        }
+
+
+
 //      $sfRequest = Request::createFromGlobals();
 //      $sfResponse = $sfKernel->handle($sfRequest);
 //      $sfResponse->send();
@@ -120,6 +135,25 @@ class Posse
     }
 
     /**
+     * @return \Posse\ServiceBundle\Services\WordpressService
+     */
+    private static function getWpService()
+    {
+        $svc = self::symfony('posse.wordpress');
+        if (!$svc) {
+            throw new Exception('Couldn\'t load Posse Wordpress service');
+        }
+        return $svc;
+    }
+    /**
+     * @return User
+     */
+    private static function getSymfonyUser()
+    {
+        return self::getWpService()->getCurrentUser();
+    }
+
+    /**
      * get project manager service
      */
     public static function renderTemplate($template, $atts = [])
@@ -146,7 +180,7 @@ class Posse
     }
 
     /**
-     * get project manager service
+     * get survey
      */
     public static function getSurvey($code)
     {
@@ -164,6 +198,19 @@ class Posse
         $vars[] = 'blog_user_email';
         return $vars;
     }
+    /**
+     * get surveys
+     */
+    public static function getSurveys()
+    {
+        /** @var \Posse\SurveyBundle\Model\Project $project */
+        $project = self::getProjectManager()->getProject();
+        if (!$project) {
+            echo "!Project not found!";
+        }
+        return $project->getSurveys();
+    }
+
 
     /**
      * add new rewrite rule to handle api calls from symfony
@@ -251,6 +298,20 @@ class Posse
         $result = get_blog_details($args, true);
         header('Content-Type: application/json');
         die(json_encode($result));
+    }
+
+    /**
+     * @return null
+     */
+    public static function getCurrentUserInfo()
+    {
+        if (is_user_logged_in()) {
+            /** @var WP_User $current_user */
+            $current_user = wp_get_current_user();
+            return self::getWpService()->getCurrentUserInfo($current_user);
+        }
+
+        return "Not logged in";
     }
 
     /**
