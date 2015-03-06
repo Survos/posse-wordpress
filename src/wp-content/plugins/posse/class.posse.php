@@ -37,7 +37,9 @@ class Posse
         require_once(POSSE__PLUGIN_DIR.'shortcodes/shortcodes.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/ct.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/user.php');
+        require_once(POSSE__PLUGIN_DIR.'shortcodes/projects.php');
         add_shortcode('project', 'posse_project_attribute');
+        add_shortcode('projects', 'posse_projects');
         add_shortcode('jobs', 'posse_jobs');
         add_shortcode('job', 'posse_job');
         add_shortcode('surveys', 'posse_surveys');
@@ -59,7 +61,6 @@ class Posse
         $sfKernel = new AppKernel('dev', true);
         $sfKernel->loadClassCache();
         $sfKernel->boot();
-
         // Add Symfony container as a global variable to be used in Wordpress
         $sfContainer = $sfKernel->getContainer();
 
@@ -80,9 +81,9 @@ class Posse
         $projectCode = reset($parts);
         $project = $pm->getProjectByName($projectCode);
 
+        self::symfony($sfContainer);
         if ($project) {
             $pm->setProject($project);
-            self::symfony($sfContainer);
         }
 
         // try to authenticate user
@@ -112,14 +113,13 @@ class Posse
      *
      * @return mixed
      */
-    private static function symfony($id)
+    public static function symfony($id)
     {
         static $container;
         if ($id instanceof ContainerInterface) {
             $container = $id;
             return;
         }
-
         if (!$container) {
             return null;
         }
@@ -168,6 +168,7 @@ class Posse
     {
         return self::symfony('survos.service.job')->getJob($code);
     }
+
     /**
      * get ct object
      */

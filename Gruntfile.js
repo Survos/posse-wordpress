@@ -1,8 +1,6 @@
 module.exports = function (grunt) {
 
     grunt.initConfig({
-
-
         gitpull: {
             dev: {
                 options: {}
@@ -10,9 +8,7 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-git');
 
-    grunt.registerTask('dev', []);
-    grunt.registerTask('default', ['cprod:dev_config']);
-
+    grunt.registerTask('default', ['gitpull']);
 };
