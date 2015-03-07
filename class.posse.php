@@ -53,11 +53,10 @@ class Posse
     public static function initSymfony()
     {
         //            require_once( ABSPATH . 'wp-includes/ms-functions.php' );
-
-        $loader = require_once __DIR__.'../../../../../../app/bootstrap.php.cache';
+        $loader = require_once __DIR__.'/../../../../app/bootstrap.php.cache';
 
         // Load application kernel
-        require_once __DIR__.'../../../../../../app/AppKernel.php';
+        require_once __DIR__.'/../../../../app/AppKernel.php';
 
         $sfKernel = new AppKernel('dev', true);
         $sfKernel->loadClassCache();
@@ -332,3 +331,4 @@ class Posse
         //tidy up
     }
 }
+
