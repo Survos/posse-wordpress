@@ -21,7 +21,6 @@ class Posse
         if (!self::$initiated) {
             self::init_hooks();
         }
-
     }
 
     /**
@@ -38,7 +37,8 @@ class Posse
         require_once(POSSE__PLUGIN_DIR.'shortcodes/ct.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/user.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/projects.php');
-        require_once(POSSE__PLUGIN_DIR.'shortcodes/login_form.php');
+        require_once(POSSE__PLUGIN_DIR.'shortcodes/login-form.php');
+        require_once(POSSE__PLUGIN_DIR.'shortcodes/user-calendar.php');
         add_shortcode('project', 'posse_project_attribute');
         add_shortcode('projects', 'posse_projects');
         add_shortcode('jobs', 'posse_jobs');
@@ -47,7 +47,23 @@ class Posse
         add_shortcode('survey', 'posse_survey');
         add_shortcode('ct', 'posse_ct');
         add_shortcode('user', 'posse_user');
-        add_shortcode('login_form', 'posse_login_form');
+        add_shortcode('login-form', 'posse_login_form');
+        add_shortcode('user-calendar', 'posse_user_calendar');
+
+        add_action('wp_enqueue_scripts', ['Posse', 'load_assets']);
+
+    }
+
+    public static function load_assets()
+    {
+        // load fullcalendar
+        wp_enqueue_style('fullcalendar', '//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.min.css');
+        wp_enqueue_style('fullcalendar-print', '//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.print.css');
+        wp_enqueue_script('fullcalendar', '//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.min.js', ['jquery', 'moment-locales']);
+
+        // main plugin assets
+        wp_enqueue_script('moment-locales', '//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js');
+        wp_enqueue_script('posse-main', plugin_dir_url(__FILE__).'js/main.js');
     }
 
     public static function initSymfony()
@@ -97,8 +113,6 @@ class Posse
             }
         }
 
-
-
 //      $sfRequest = Request::createFromGlobals();
 //      $sfResponse = $sfKernel->handle($sfRequest);
 //      $sfResponse->send();
@@ -145,6 +159,7 @@ class Posse
         }
         return $svc;
     }
+
     /**
      * @return User
      */
@@ -198,6 +213,7 @@ class Posse
         $vars[] = 'blog_user_email';
         return $vars;
     }
+
     /**
      * get surveys
      */
@@ -210,7 +226,6 @@ class Posse
         }
         return $project->getSurveys();
     }
-
 
     /**
      * add new rewrite rule to handle api calls from symfony
