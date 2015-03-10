@@ -51,6 +51,17 @@ class Posse
 
         add_action('wp_enqueue_scripts', ['Posse', 'load_assets']);
 
+        add_action('wp_signup_location', 'posse_register_add_project_code');
+
+        function posse_register_add_project_code($link)
+        {
+            $site = get_blog_details();
+            $parts = explode('.', $site->domain);
+            $projectCode = reset($parts);
+
+            return $link."?project=".$projectCode;
+        }
+
     }
 
     public static function load_assets()
@@ -63,6 +74,15 @@ class Posse
         // main plugin assets
         wp_enqueue_script('moment-locales', '//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js');
         wp_enqueue_script('posse-main', plugin_dir_url(__FILE__).'js/main.js');
+    }
+
+    public static function syncUser(WP_User $user, $password = '')
+    {
+        /** @var \Posse\UserBundle\Manager\UserManager $um */
+        $um = self::symfony('survos.user_manager');
+
+        $um->createUserFromWp($user, $password);
+
     }
 
     public static function initSymfony()
@@ -126,7 +146,7 @@ class Posse
      *
      * @return mixed
      */
-    public static function symfony($id)
+    public static function symfony($id, $parameter = false, $def = '')
     {
         static $container;
         if ($id instanceof ContainerInterface) {
@@ -136,7 +156,22 @@ class Posse
         if (!$container) {
             return null;
         }
-        return $container->get($id);
+        if ($parameter !== false) {
+            return $container->getParameter($parameter, $def);
+        } else {
+            return $container->get($id);
+        }
+    }
+
+    public static function getParameter($param, $def = '')
+    {
+        return self::symfony(null, $param, $def);
+    }
+
+    public static function getBlogFullDomain($slug)
+    {
+        $dom = self::getParameter('wordpress.master_domain');
+        return $slug.".".$dom;
     }
 
     /**
@@ -220,6 +255,18 @@ class Posse
     }
 
     /**
+     * get surveys
+     */
+    public static function getProjectRoles()
+    {
+        return [
+            'visitor',
+            'role 2',
+            'role 3'
+        ];
+    }
+
+    /**
      * add new rewrite rule to handle api calls from symfony
      */
 //    public static function posse_theme_functionality_urls()
@@ -230,7 +277,6 @@ class Posse
 //            'top'
 //        );
 //    }
-
 
     /**
      * @return null
@@ -264,3 +310,86 @@ class Posse
     }
 }
 
+add_action('signup_extra_fields', 'myplugin_add_registration_fields');
+
+function myplugin_add_registration_fields()
+{
+
+    //Get and set any values already sent
+    $posse_user_role = (isset($_POST['posse_user_role'])) ? $_POST['posse_user_role'] : '';
+    ?>
+
+    <div class="form-group">
+        <label for="posse_user_role"><?php _e('Project role', 'myplugin_textdomain') ?>
+        </label>
+        <select type="text" name="posse_user_role" id="posse_user_role" class="input"
+                value="<?php echo esc_attr(stripslashes($posse_user_role)); ?>">
+            <?php foreach (Posse::getProjectRoles() as $role): ?>
+                <option value="<?php echo $role ?>"><?php echo $role ?></option>
+            <?php endforeach ?>
+        </select>
+    </div>
+
+
+<?php
+}
+
+/**
+ * Add a hidden field with the theme's value
+ */
+function posse_theme_hidden_fields()
+{ ?>
+
+    <?php
+    $project = isset($_GET['project']) ? $_GET['project'] : '';
+    ?>
+    <input type="hidden" name="project_code" value="<?php echo $project; ?>">
+<?php }
+
+add_action('signup_hidden_fields', 'posse_theme_hidden_fields');
+
+function posse_add_signup_meta($result)
+{
+
+    return [
+        'posse_user_role' => $_POST['posse_user_role'],
+        'project_code'    => $_POST['project_code'],
+    ];
+}
+
+add_filter('add_signup_meta', 'posse_add_signup_meta');
+
+/**
+ * @param $user_id
+ * @param $password
+ * @param $meta
+ */
+function posse_wpmu_activate_user($user_id, $password, $meta)
+{
+    if (isset($meta['project_code']) && isset($meta['posse_user_role'])) {
+        $project_role = get_user_meta($user_id, 'project_role', true);
+        if (!$project_role) {
+            $project_role = [];
+        }
+        $project_role[$meta['project_code']] = $meta['posse_user_role'];
+        update_user_meta($user_id, 'project_role', $project_role);
+
+        $blog = get_blog_details(['domain' => Posse::getBlogFullDomain($meta['project_code'])]);
+
+        if ($blog) {
+            add_user_to_blog($blog->blog_id, $user_id, 'subscriber');
+        }
+//        wp_redirect($blog->siteurl);
+
+        unset($meta['project_code']);
+        unset($meta['posse_user_role']);
+    }
+    // update other meta fields
+    foreach ($meta as $key => $val) {
+        update_user_meta($user_id, $key, $val);
+    }
+
+    Posse::syncUser(get_userdata($user_id), $password);
+}
+
+add_filter('wpmu_activate_user', 'posse_wpmu_activate_user', 10, 3);

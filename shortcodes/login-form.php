@@ -19,10 +19,14 @@ function posse_login_form($atts)
     if (is_user_logged_in()) {
         return do_shortcode('[user]');
     } else {
-        return wp_login_form(
+        $login  =wp_login_form(
             [
                 "echo" => false
             ]
         );
+        if (!is_user_logged_in()) {
+            $login .= wp_register('','',false);
+        }
+        return $login;
     }
 }
