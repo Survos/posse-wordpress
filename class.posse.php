@@ -378,8 +378,8 @@ function posse_wpmu_activate_user($user_id, $password, $meta)
 
         if ($blog) {
             add_user_to_blog($blog->blog_id, $user_id, 'subscriber');
+            ?><script>window.location.replace("<?php echo $blog->siteurl ?>");</script><?php
         }
-//        wp_redirect($blog->siteurl);
 
         unset($meta['project_code']);
         unset($meta['posse_user_role']);
@@ -392,4 +392,4 @@ function posse_wpmu_activate_user($user_id, $password, $meta)
     Posse::syncUser(get_userdata($user_id), $password);
 }
 
-add_filter('wpmu_activate_user', 'posse_wpmu_activate_user', 10, 3);
+add_filter('wpmu_activate_user', 'posse_wpmu_activate_user', 1, 3);
