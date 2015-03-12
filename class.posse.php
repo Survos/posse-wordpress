@@ -32,10 +32,14 @@ class Posse
 //        add_filter('query_vars', ['Posse', 'posse_custom_query_vars']);
 //        add_filter('rewrite_rules_array', ['Posse', 'posse_theme_functionality_urls']);
         self::initSymfony();
-        require_once(POSSE__PLUGIN_DIR.'shortcodes/shortcodes.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/ct.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/user.php');
+        require_once(POSSE__PLUGIN_DIR.'shortcodes/job.php');
+        require_once(POSSE__PLUGIN_DIR.'shortcodes/jobs.php');
+        require_once(POSSE__PLUGIN_DIR.'shortcodes/survey.php');
+        require_once(POSSE__PLUGIN_DIR.'shortcodes/surveys.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/projects.php');
+        require_once(POSSE__PLUGIN_DIR.'shortcodes/project_attribute.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/login-form.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/user-calendar.php');
         add_shortcode('project', 'posse_project_attribute');
@@ -266,30 +270,13 @@ class Posse
         ];
     }
 
-    /**
-     * add new rewrite rule to handle api calls from symfony
-     */
-//    public static function posse_theme_functionality_urls()
-//    {
-//        add_rewrite_rule(
-//            '^api/?',
-//            'index.php',
-//            'top'
-//        );
-//    }
 
     /**
-     * @return null
+     * @return \Posse\UserBundle\Propel\User
      */
-    public static function getCurrentUserInfo()
+    public static function getCurrentSymfonyUser()
     {
-        if (is_user_logged_in()) {
-            /** @var WP_User $current_user */
-            $current_user = wp_get_current_user();
-            return self::getWpService()->getCurrentUserInfo($current_user);
-        }
-
-        return "Not logged in";
+        return self::getWpService()->getCurrentUser();
     }
 
     /**
@@ -378,7 +365,8 @@ function posse_wpmu_activate_user($user_id, $password, $meta)
 
         if ($blog) {
             add_user_to_blog($blog->blog_id, $user_id, 'subscriber');
-            ?><script>window.location.replace("<?php echo $blog->siteurl ?>");</script><?php
+            ?>
+            <script>window.location.replace("<?php echo $blog->siteurl ?>");</script><?php
         }
 
         unset($meta['project_code']);

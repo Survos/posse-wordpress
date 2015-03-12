@@ -15,8 +15,13 @@ function posse_user($atts)
         )
     );
 
-
-    $return = Posse::getCurrentUserInfo();
+    $return = Posse::renderTemplate('PosseServiceBundle:Wordpress:shortcode.html.twig', [
+        'shortcode' => 'user',
+        'data'     => [
+            'user'    => Posse::getCurrentSymfonyUser(),
+            'wp_user' => get_currentuserinfo(),
+        ]
+    ]);
 
     return $return;
 }
