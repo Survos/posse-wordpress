@@ -38,11 +38,13 @@ class Posse
         require_once(POSSE__PLUGIN_DIR.'shortcodes/jobs.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/survey.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/surveys.php');
+        require_once(POSSE__PLUGIN_DIR.'shortcodes/my-projects.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/projects.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/project_attribute.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/login-form.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/user-calendar.php');
         add_shortcode('project', 'posse_project_attribute');
+        add_shortcode('my-projects', 'my_posse_projects');
         add_shortcode('projects', 'posse_projects');
         add_shortcode('jobs', 'posse_jobs');
         add_shortcode('job', 'posse_job');
@@ -213,6 +215,7 @@ class Posse
     {
         return self::symfony('twig')->render($template, $atts);
     }
+
 
     /**
      * get project manager service
