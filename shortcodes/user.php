@@ -5,7 +5,7 @@
  * @param $atts
  * @return string
  */
-function posse_user($atts)
+function posse_user($atts, $content = null)
 {
     extract(
         shortcode_atts(
@@ -17,7 +17,8 @@ function posse_user($atts)
 
     $return = Posse::renderTemplate('PosseServiceBundle:Wordpress:shortcode.html.twig', [
         'shortcode' => 'user',
-        'data'     => [
+        'content'   => $content,
+        'data'      => [
             'user'    => Posse::getCurrentSymfonyUser(),
             'wp_user' => get_currentuserinfo(),
         ]
