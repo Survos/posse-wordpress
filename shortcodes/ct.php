@@ -5,35 +5,23 @@
  * @param $atts
  * @return string
  */
-function posse_ct($atts)
+function posse_ct($atts, $content = null)
 {
     extract(
         shortcode_atts(
             [
-                'id' => ''
             ],
             $atts
         )
     );
 
-    if (!$id) {
-        echo "!no ID given!";
-    }
-
-    ob_start();
-
-    /** @var \Posse\SurveyBundle\Model\Survey\Survey $survey */
-    $ct = Posse::getCt($id);
-    ?>
-
-    <?php if ($ct): ?>
-    <?php echo $ct ?>
-<?php endif ?>
-
-
-
-    <?php
-    $return = ob_get_clean();
+    $return = Posse::renderTemplate('PosseServiceBundle:Wordpress:shortcode.html.twig', [
+        'shortcode' => 'ct',
+        'content'   => $content,
+        'data'      => [
+            'ct' => Posse::getCt()
+        ]
+    ]);
 
     return $return;
 }

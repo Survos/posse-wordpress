@@ -216,7 +216,6 @@ class Posse
         return self::symfony('twig')->render($template, $atts);
     }
 
-
     /**
      * get project manager service
      */
@@ -230,9 +229,7 @@ class Posse
      */
     public static function getCt($code)
     {
-        $ct = self::symfony('survos.clinical_trials')->getCt($code);
-        $html = self::symfony('templating')->render("SurvosClinicalTrialsBundle:Trial:_ct_view.html.twig", ['ct' => $ct]);
-        return $html;
+        return self::symfony('survos.clinical_trials')->getCt($code);
     }
 
     /**
@@ -272,7 +269,6 @@ class Posse
             'role 3'
         ];
     }
-
 
     /**
      * @return \Posse\UserBundle\Propel\User
