@@ -55,6 +55,13 @@ class Posse
         add_shortcode('login-form', 'posse_login_form');
         add_shortcode('user-calendar', 'posse_user_calendar');
 
+        // register custom post types
+        require_once(POSSE__PLUGIN_DIR.'inc/post-types.php');
+        posse_create_post_types();
+        // register ACF (custom fields)
+        require_once(POSSE__PLUGIN_DIR.'inc/custom-fields.php');
+        posse_create_custom_fields();
+
         add_action('wp_enqueue_scripts', ['Posse', 'load_assets']);
 
         add_action('wp_signup_location', 'posse_register_add_project_code');
