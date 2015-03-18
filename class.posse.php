@@ -34,6 +34,7 @@ class Posse
         self::initSymfony();
         require_once(POSSE__PLUGIN_DIR.'shortcodes/ct.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/user.php');
+        require_once(POSSE__PLUGIN_DIR.'shortcodes/memberships.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/job.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/jobs.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/survey.php');
@@ -52,15 +53,9 @@ class Posse
         add_shortcode('survey', 'posse_survey');
         add_shortcode('ct', 'posse_ct');
         add_shortcode('user', 'posse_user');
+        add_shortcode('memberships', 'posse_memberships');
         add_shortcode('login-form', 'posse_login_form');
         add_shortcode('user-calendar', 'posse_user_calendar');
-
-        // register custom post types
-        require_once(POSSE__PLUGIN_DIR.'inc/post-types.php');
-        posse_create_post_types();
-        // register ACF (custom fields)
-        require_once(POSSE__PLUGIN_DIR.'inc/custom-fields.php');
-        posse_create_custom_fields();
 
         add_action('wp_enqueue_scripts', ['Posse', 'load_assets']);
 
@@ -223,6 +218,7 @@ class Posse
         return self::symfony('twig')->render($template, $atts);
     }
 
+
     /**
      * get project manager service
      */
@@ -236,7 +232,9 @@ class Posse
      */
     public static function getCt($code)
     {
-        return self::symfony('survos.clinical_trials')->getCt($code);
+        $ct = self::symfony('survos.clinical_trials')->getCt($code);
+        $html = self::symfony('templating')->render("SurvosClinicalTrialsBundle:Trial:_ct_view.html.twig", ['ct' => $ct]);
+        return $html;
     }
 
     /**
@@ -276,6 +274,7 @@ class Posse
             'role 3'
         ];
     }
+
 
     /**
      * @return \Posse\UserBundle\Propel\User
