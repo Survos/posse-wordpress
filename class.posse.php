@@ -35,6 +35,7 @@ class Posse
         require_once(POSSE__PLUGIN_DIR.'shortcodes/ct.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/user.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/memberships.php');
+        require_once(POSSE__PLUGIN_DIR.'shortcodes/membership.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/job.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/jobs.php');
         require_once(POSSE__PLUGIN_DIR.'shortcodes/survey.php');
@@ -54,6 +55,7 @@ class Posse
         add_shortcode('ct', 'posse_ct');
         add_shortcode('user', 'posse_user');
         add_shortcode('memberships', 'posse_memberships');
+        add_shortcode('membership', 'posse_membership');
         add_shortcode('login-form', 'posse_login_form');
         add_shortcode('user-calendar', 'posse_user_calendar');
 
@@ -269,9 +271,11 @@ class Posse
     public static function getProjectRoles()
     {
         return [
+            'this-isnt-working-yet',
             'visitor',
-            'role 2',
-            'role 3'
+            'participant',
+            'field worker',
+            'admin',
         ];
     }
 
