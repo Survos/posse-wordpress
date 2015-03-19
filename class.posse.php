@@ -63,6 +63,13 @@ class Posse
 
         add_action('wp_signup_location', 'posse_register_add_project_code');
 
+        // register custom post types
+        require_once(POSSE__PLUGIN_DIR.'inc/post-types.php');
+        posse_create_post_types();
+        // register ACF (custom fields)
+        require_once(POSSE__PLUGIN_DIR.'inc/custom-fields.php');
+        posse_create_custom_fields();
+
         function posse_register_add_project_code($link)
         {
             $site = get_blog_details();
@@ -220,7 +227,6 @@ class Posse
         return self::symfony('twig')->render($template, $atts);
     }
 
-
     /**
      * get project manager service
      */
@@ -278,7 +284,6 @@ class Posse
             'admin',
         ];
     }
-
 
     /**
      * @return \Posse\UserBundle\Propel\User
