@@ -83,14 +83,15 @@ class Posse
 
     public static function load_assets()
     {
-        return true; // bypass
+//        return true; // bypass
         // load fullcalendar
-        wp_enqueue_style('fullcalendar', '//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.min.css');
-        wp_enqueue_style('fullcalendar-print', '//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.print.css');
-        wp_enqueue_script('fullcalendar', '//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.min.js', ['jquery', 'moment-locales']);
+        wp_enqueue_style('fullcalendar', '/components/fullcalendar/fullcalendar.css');
+//        wp_enqueue_style('fullcalendar-print', '//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.print.css');
+        wp_enqueue_script('fullcalendar', '/components/fullcalendar/fullcalendar.js', ['jquery', 'moment-tz']);
 
         // main plugin assets
-        wp_enqueue_script('moment-locales', '//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js');
+        wp_enqueue_script('moment', '/components/moment/moment.js');
+        wp_enqueue_script('moment-tz', '/components/moment-timezone/moment-timezone-with-data-2010-2020.min.js',['moment']);
         wp_enqueue_script('posse-main', plugin_dir_url(__FILE__).'js/main.js');
     }
 
