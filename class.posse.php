@@ -83,6 +83,7 @@ class Posse
 
     public static function load_assets()
     {
+        return true; // bypass
         // load fullcalendar
         wp_enqueue_style('fullcalendar', '//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.min.css');
         wp_enqueue_style('fullcalendar-print', '//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.print.css');
