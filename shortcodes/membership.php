@@ -7,6 +7,7 @@
  */
 function posse_membership($atts, $content = null)
 {
+    // why not use OptionsResolver here?
     extract(
         shortcode_atts(
             [
@@ -16,14 +17,19 @@ function posse_membership($atts, $content = null)
         )
     );
 
+    if (!$mt = \Posse\SurveyBundle\Model\Type\MemberTypeQuery::create()->findOneByCode($code))
+    {
+        return sprintf("Shortcode error: invalid memberType %s", $code);
+    }
+
     $return = Posse::renderTemplate('PosseServiceBundle:Wordpress:shortcode.html.twig', [
         'shortcode' => 'membership',
         'content'   => $content,
         'data'      => [
             'user'       => $user = Posse::getCurrentSymfonyUser(),
             'wp_user'    => get_currentuserinfo(),
-            'memberType' => $mt = \Posse\SurveyBundle\Model\Type\MemberTypeQuery::create()->findOneByCode($code),
-            'member'     => $user ? $mt->memberQuery()->filterByUser($user)->findOne() : null, // missing $project!
+            'memberType' => $mt,
+            'member'     => ($mt && $user) ? $mt->memberQuery()->filterByUser($user)->findOne() : null, // missing $project!
         ]
     ]);
 
