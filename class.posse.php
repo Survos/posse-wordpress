@@ -76,17 +76,15 @@ class Posse
         // register ACF (custom fields)
         posse_create_custom_fields();
 
-
         // reg form fields
         add_action('signup_extra_fields', 'posse_add_registration_fields');
         // reg form layout
-        add_filter( 'before_signup_form', 'posse_before_signup_form', 10, 4 );
-        add_filter( 'signup_finished', 'posse_signup_finished', 10, 4 );
+        add_filter('before_signup_form', 'posse_before_signup_form', 10, 4);
+        add_filter('signup_finished', 'posse_signup_finished', 10, 4);
         // activation email
-        add_filter( 'wpmu_signup_user_notification', 'posse_wpmu_signup_user_notification', 10, 4 );
+        add_filter('wpmu_signup_user_notification', 'posse_wpmu_signup_user_notification', 10, 4);
         // welcome email
-        add_filter( 'wpmu_welcome_user_notification', 'posse_wpmu_welcome_user_notification', 10, 3 );
-
+        add_filter('wpmu_welcome_user_notification', 'posse_wpmu_welcome_user_notification', 10, 3);
 
         // disable comments
         add_action('admin_init', 'df_disable_comments_post_types_support');
@@ -97,7 +95,6 @@ class Posse
         add_action('admin_init', 'df_disable_comments_admin_menu_redirect');
         add_action('admin_init', 'df_disable_comments_dashboard');
         add_action('init', 'df_disable_comments_admin_bar');
-
 
         function posse_register_add_project_code($link)
         {
@@ -110,21 +107,27 @@ class Posse
 
     }
 
-    public static function load_assets()
+    /**
+     * load full calendar styles + deps
+     */
+    public static function load_calendar_assets()
     {
-//        return true; // bypass
-        // load fullcalendar
         wp_enqueue_style('fullcalendar', '/components/fullcalendar/fullcalendar.css');
-
 //        wp_enqueue_style('fullcalendar-print', '//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.print.css');
         wp_enqueue_script('fullcalendar', '/components/fullcalendar/fullcalendar.js', ['jquery', 'moment-tz']);
 
         // main plugin assets
         wp_enqueue_script('moment', '/components/moment/moment.js');
         wp_enqueue_script('moment-tz', '/components/moment-timezone/moment-timezone-with-data-2010-2020.min.js', ['moment']);
+    }
+
+    /**
+     * load plugin assets
+     */
+    public static function load_assets()
+    {
         wp_enqueue_script('posse-main', plugin_dir_url(__FILE__).'js/main.js');
         wp_enqueue_style('posse-main', plugin_dir_url(__FILE__).'css/main.css');
-
     }
 
     public static function syncUser(WP_User $user, $password = '')
@@ -138,7 +141,6 @@ class Posse
 
     public static function initSymfony()
     {
-        //            require_once( ABSPATH . 'wp-includes/ms-functions.php' );
         $loader = require_once __DIR__.'/../../../../app/bootstrap.php.cache';
 
         // Load application kernel
@@ -177,8 +179,9 @@ class Posse
             /** @var WP_User $current_user */
             $current_user = wp_get_current_user();
             $email = $current_user->get('user_email');
+            /** @var \Posse\UserBundle\Propel\User $symfonyUser */
             $symfonyUser = self::getSymfonyUser();
-            if (!$symfonyUser || $symfonyUser == 'anon.') {
+            if (!$symfonyUser || $symfonyUser == 'anon.'||($symfonyUser && $symfonyUser->getEmail() != $email)) {
                 self::getWpService()->authenticateUserByEmail($email);
             }
         }
