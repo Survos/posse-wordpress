@@ -19,7 +19,7 @@ function posse_memberships($atts, $content = null)
         'shortcode' => 'memberships',
         'content'   => $content,
         'data'      => [
-            'user'    => Posse::getCurrentSymfonyUser(),
+            'user'    => Posse::getSymfonyUser(),
             'wp_user' => get_currentuserinfo(),
         ]
     ]);
