@@ -3,8 +3,7 @@
  * @author Piotr Grochowski <piogrek@gmail.com>
  */
 jQuery(function ($) {
-    console.log('posse plugin init');
+    console.log('posse plugin init (nothing loaded)');
 
-    $('.user-calendar').fullCalendar({
-    });
+    // $('.user-calendar').fullCalendar({});
 });
