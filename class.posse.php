@@ -114,10 +114,11 @@ class Posse
      */
     public static function load_calendar_assets()
     {
+        /*
         wp_enqueue_style('fullcalendar', '/components/fullcalendar/fullcalendar.css');
 //        wp_enqueue_style('fullcalendar-print', '//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.print.css');
         wp_enqueue_script('fullcalendar', '/components/fullcalendar/fullcalendar.js', ['jquery', 'moment-tz']);
-
+        */
         // main plugin assets
         wp_enqueue_script('moment', '/components/moment/moment.js');
         wp_enqueue_script('moment-tz', '/components/moment-timezone/moment-timezone-with-data-2010-2020.min.js', ['moment']);
