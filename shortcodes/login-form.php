@@ -10,23 +10,18 @@ function posse_login_form($atts)
     extract(
         shortcode_atts(
             [
-                'redirect' => ''
             ],
             $atts
         )
     );
 
-    if (is_user_logged_in()) {
-        return do_shortcode('[user]');
-    } else {
-        $login  =wp_login_form(
-            [
-                "echo" => false
-            ]
-        );
-        if (!is_user_logged_in()) {
-            $login .= wp_register('','',false);
-        }
-        return $login;
-    }
+    /** @var \Posse\SurveyBundle\Services\ProjectManager $pm */
+    $pm = Posse::getProjectManager();
+    $return = Posse::renderTemplate('PosseServiceBundle:Wordpress:shortcode.html.twig', [
+        'shortcode' => 'login',
+        'content'   => null,
+        'data'      => [
+        ]
+    ]);
+    return $return;
 }

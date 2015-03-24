@@ -78,15 +78,7 @@ class Posse
         // register ACF (custom fields)
         posse_create_custom_fields();
 
-        // reg form fields
-        add_action('signup_extra_fields', 'posse_add_registration_fields');
-        // reg form layout
-        add_filter('before_signup_form', 'posse_before_signup_form', 10, 4);
-        add_filter('signup_finished', 'posse_signup_finished', 10, 4);
-        // activation email
-        add_filter('wpmu_signup_user_notification', 'posse_wpmu_signup_user_notification', 10, 4);
-        // welcome email
-        add_filter('wpmu_welcome_user_notification', 'posse_wpmu_welcome_user_notification', 10, 3);
+        add_action("wp_logout", "posse_logout");
 
         // disable comments
         add_action('admin_init', 'df_disable_comments_post_types_support');
@@ -107,6 +99,16 @@ class Posse
             return $link."?project=".$projectCode;
         }
 
+    }
+
+    /**
+     *
+     */
+    public static function logoutAll()
+    {
+        $token = new \Symfony\Component\Security\Core\Authentication\Token\AnonymousToken('fos_userbundle', 'anon.');
+        self::symfony('security.context')->setToken($token);
+        self::symfony('request_stack')->getCurrentRequest()->getSession()->invalidate();
     }
 
     /**
@@ -164,6 +166,11 @@ class Posse
         $pm = $sfContainer->get('survos_survey.project_manager');
         $sfRequest = Request::createFromGlobals();
         $sfResponse = $sfKernel->handle($sfRequest);
+        $session  = $sfRequest->getSession();
+        if (!$sfRequest->hasSession()) {
+            $session = new \Symfony\Component\HttpFoundation\Session\Session();
+            $sfRequest->setSession($session);
+        }
 //        $sfResponse->send();
 
         $site = get_blog_details();
@@ -177,21 +184,29 @@ class Posse
         }
 
         // try to authenticate user
+        /** @var WP_User $current_user */
+        $current_user = null;
         if (is_user_logged_in()) {
-            /** @var WP_User $current_user */
             $current_user = wp_get_current_user();
             $email = $current_user->get('user_email');
-            /** @var \Posse\UserBundle\Propel\User $symfonyUser */
-            $symfonyUser = self::getSymfonyUser();
-            if (!$symfonyUser || $symfonyUser == 'anon.'||($symfonyUser && $symfonyUser->getEmail() != $email)) {
-                self::getWpService()->authenticateUserByEmail($email);
+        }
+
+        /** @var \Posse\UserBundle\Propel\User $symfonyUser */
+        $symfonyUser = self::getSymfonyUser();
+        if ($symfonyUser && (!is_user_logged_in() || $symfonyUser->getEmail() != $email)) {
+//                self::getWpService()->authenticateUserByEmail($email);
+            $wpuser = get_user_by('email', $symfonyUser->getEmail());
+            if ($wpuser) {
+                //authenticate local user if found
+                wp_set_auth_cookie($wpuser->id);
+                wp_redirect(home_url());
             }
         }
 
-//      $sfRequest = Request::createFromGlobals();
-//      $sfResponse = $sfKernel->handle($sfRequest);
+        $sfRequest = Request::createFromGlobals();
+        $sfContainer->get('request_stack')->push($sfRequest);
+        $sfResponse = $sfKernel->handle($sfRequest);
 //      $sfResponse->send();
-//
 //      $sfKernel->terminate($sfRequest, $sfResponse);
     }
 
