@@ -107,8 +107,9 @@ class Posse
     public static function logoutAll()
     {
         $token = new \Symfony\Component\Security\Core\Authentication\Token\AnonymousToken('fos_userbundle', 'anon.');
-        self::symfony('security.context')->setToken($token);
-        self::symfony('request_stack')->getCurrentRequest()->getSession()->invalidate();
+        self::symfony('security.token_storage')->setToken($token);
+        $session = self::symfony('request_stack')->getCurrentRequest()->getSession();
+        $session->invalidate();
     }
 
     /**
@@ -165,13 +166,17 @@ class Posse
 
         /** @var \Posse\SurveyBundle\Services\ProjectManager $pm */
         $pm = $sfContainer->get('survos_survey.project_manager');
+
         $sfRequest = Request::createFromGlobals();
+        $sfContainer->get('request_stack')->push($sfRequest);
+        $sfRequest->server->set('REQUEST_URI','/'); //hack
         $sfResponse = $sfKernel->handle($sfRequest);
-        $session  = $sfRequest->getSession();
-        if (!$sfRequest->hasSession()) {
-            $session = new \Symfony\Component\HttpFoundation\Session\Session();
-            $sfRequest->setSession($session);
-        }
+
+        $session = $sfRequest->getSession();
+//        if (!$sfRequest->hasSession()) {
+//            $session = new \Symfony\Component\HttpFoundation\Session\Session();
+//            $sfRequest->setSession($session);
+//        }
 //        $sfResponse->send();
 
         $site = get_blog_details();
@@ -191,10 +196,12 @@ class Posse
             $current_user = wp_get_current_user();
             $email = $current_user->get('user_email');
         }
+//        $sfRequest = Request::createFromGlobals();
+//        $sfResponse = $sfKernel->handle($sfRequest);
 
         /** @var \Posse\UserBundle\Propel\User $symfonyUser */
         $symfonyUser = self::getSymfonyUser();
-        if ($symfonyUser && (!is_user_logged_in() || $symfonyUser->getEmail() != $email)) {
+        if (is_object($symfonyUser) && (!is_user_logged_in() || $symfonyUser->getEmail() != $email)) {
 //                self::getWpService()->authenticateUserByEmail($email);
             $wpuser = get_user_by('email', $symfonyUser->getEmail());
             if ($wpuser) {
@@ -202,11 +209,13 @@ class Posse
                 wp_set_auth_cookie($wpuser->id);
                 wp_redirect(home_url());
             }
+        } else {
+            if (!$symfonyUser) {
+                wp_logout();
+            }
+//            wp_redirect(home_url());
         }
 
-        $sfRequest = Request::createFromGlobals();
-        $sfContainer->get('request_stack')->push($sfRequest);
-        $sfResponse = $sfKernel->handle($sfRequest);
 //      $sfResponse->send();
 //      $sfKernel->terminate($sfRequest, $sfResponse);
     }
@@ -269,9 +278,13 @@ class Posse
     /**
      * @return User
      */
-    private static function getSymfonyUser()
+    public static function getSymfonyUser()
     {
-        return self::getWpService()->getCurrentUser();
+        $token = self::symfony('security.token_storage')->getToken();
+        if ($token) {
+            return $token->getUser();
+        }
+        return null;
     }
 
     /**
@@ -338,14 +351,6 @@ class Posse
             'field worker',
             'admin',
         ];
-    }
-
-    /**
-     * @return \Posse\UserBundle\Propel\User
-     */
-    public static function getCurrentSymfonyUser()
-    {
-        return self::getWpService()->getCurrentUser();
     }
 
     /**

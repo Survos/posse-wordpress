@@ -21,12 +21,12 @@ function posse_membership($atts, $content = null)
     {
         return sprintf("Shortcode error: invalid memberType %s", $code);
     }
-
-    $return = Posse::renderTemplate('PosseServiceBundle:Wordpress:shortcode.html.twig', [
+    $user = Posse::getSymfonyUser();
+    $return =   Posse::renderTemplate('PosseServiceBundle:Wordpress:shortcode.html.twig', [
         'shortcode' => 'membership',
         'content'   => $content,
         'data'      => [
-            'user'       => $user = Posse::getCurrentSymfonyUser(),
+            'user'       => $user,
             'wp_user'    => get_currentuserinfo(),
             'memberType' => $mt,
             'member'     => ($mt && $user) ? $mt->memberQuery()->filterByUser($user)->findOne() : null, // missing $project!
