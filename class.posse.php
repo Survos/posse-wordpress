@@ -4,6 +4,25 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Debug\Debug;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+// registration related functions
+require_once(POSSE__PLUGIN_DIR.'inc/comments.php');
+require_once(POSSE__PLUGIN_DIR.'inc/registration.php');
+require_once(POSSE__PLUGIN_DIR.'inc/post-types.php');
+require_once(POSSE__PLUGIN_DIR.'inc/custom-fields.php');
+require_once(POSSE__PLUGIN_DIR.'shortcodes/ct.php');
+require_once(POSSE__PLUGIN_DIR.'shortcodes/user.php');
+require_once(POSSE__PLUGIN_DIR.'shortcodes/memberships.php');
+require_once(POSSE__PLUGIN_DIR.'shortcodes/membership.php');
+require_once(POSSE__PLUGIN_DIR.'shortcodes/job.php');
+require_once(POSSE__PLUGIN_DIR.'shortcodes/jobs.php');
+require_once(POSSE__PLUGIN_DIR.'shortcodes/survey.php');
+require_once(POSSE__PLUGIN_DIR.'shortcodes/surveys.php');
+require_once(POSSE__PLUGIN_DIR.'shortcodes/my-projects.php');
+require_once(POSSE__PLUGIN_DIR.'shortcodes/projects.php');
+require_once(POSSE__PLUGIN_DIR.'shortcodes/project_attribute.php');
+require_once(POSSE__PLUGIN_DIR.'shortcodes/login-form.php');
+require_once(POSSE__PLUGIN_DIR.'shortcodes/user-calendar.php');
+
 /**
  * Class Posse
  */
@@ -32,19 +51,7 @@ class Posse
 //        add_filter('query_vars', ['Posse', 'posse_custom_query_vars']);
 //        add_filter('rewrite_rules_array', ['Posse', 'posse_theme_functionality_urls']);
         self::initSymfony();
-        require_once(POSSE__PLUGIN_DIR.'shortcodes/ct.php');
-        require_once(POSSE__PLUGIN_DIR.'shortcodes/user.php');
-        require_once(POSSE__PLUGIN_DIR.'shortcodes/memberships.php');
-        require_once(POSSE__PLUGIN_DIR.'shortcodes/membership.php');
-        require_once(POSSE__PLUGIN_DIR.'shortcodes/job.php');
-        require_once(POSSE__PLUGIN_DIR.'shortcodes/jobs.php');
-        require_once(POSSE__PLUGIN_DIR.'shortcodes/survey.php');
-        require_once(POSSE__PLUGIN_DIR.'shortcodes/surveys.php');
-        require_once(POSSE__PLUGIN_DIR.'shortcodes/my-projects.php');
-        require_once(POSSE__PLUGIN_DIR.'shortcodes/projects.php');
-        require_once(POSSE__PLUGIN_DIR.'shortcodes/project_attribute.php');
-        require_once(POSSE__PLUGIN_DIR.'shortcodes/login-form.php');
-        require_once(POSSE__PLUGIN_DIR.'shortcodes/user-calendar.php');
+
         add_shortcode('project', 'posse_project_attribute');
         add_shortcode('my-projects', 'my_posse_projects');
         add_shortcode('projects', 'posse_projects');
@@ -64,11 +71,33 @@ class Posse
         add_action('wp_signup_location', 'posse_register_add_project_code');
 
         // register custom post types
-        require_once(POSSE__PLUGIN_DIR.'inc/post-types.php');
         posse_create_post_types();
+
         // register ACF (custom fields)
-        require_once(POSSE__PLUGIN_DIR.'inc/custom-fields.php');
         posse_create_custom_fields();
+
+
+        // reg form fields
+        add_action('signup_extra_fields', 'posse_add_registration_fields');
+        // reg form layout
+        add_filter( 'before_signup_form', 'posse_before_signup_form', 10, 4 );
+        add_filter( 'signup_finished', 'posse_signup_finished', 10, 4 );
+        // activation email
+        add_filter( 'wpmu_signup_user_notification', 'posse_wpmu_signup_user_notification', 10, 4 );
+        // welcome email
+        add_filter( 'wpmu_welcome_user_notification', 'posse_wpmu_welcome_user_notification', 10, 3 );
+
+
+        // disable comments
+        add_action('admin_init', 'df_disable_comments_post_types_support');
+        add_filter('comments_open', 'df_disable_comments_status', 20, 2);
+        add_filter('pings_open', 'df_disable_comments_status', 20, 2);
+        add_filter('comments_array', 'df_disable_comments_hide_existing_comments', 10, 2);
+        add_action('admin_menu', 'df_disable_comments_admin_menu');
+        add_action('admin_init', 'df_disable_comments_admin_menu_redirect');
+        add_action('admin_init', 'df_disable_comments_dashboard');
+        add_action('init', 'df_disable_comments_admin_bar');
+
 
         function posse_register_add_project_code($link)
         {
@@ -86,13 +115,16 @@ class Posse
 //        return true; // bypass
         // load fullcalendar
         wp_enqueue_style('fullcalendar', '/components/fullcalendar/fullcalendar.css');
+
 //        wp_enqueue_style('fullcalendar-print', '//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.print.css');
         wp_enqueue_script('fullcalendar', '/components/fullcalendar/fullcalendar.js', ['jquery', 'moment-tz']);
 
         // main plugin assets
         wp_enqueue_script('moment', '/components/moment/moment.js');
-        wp_enqueue_script('moment-tz', '/components/moment-timezone/moment-timezone-with-data-2010-2020.min.js',['moment']);
+        wp_enqueue_script('moment-tz', '/components/moment-timezone/moment-timezone-with-data-2010-2020.min.js', ['moment']);
         wp_enqueue_script('posse-main', plugin_dir_url(__FILE__).'js/main.js');
+        wp_enqueue_style('posse-main', plugin_dir_url(__FILE__).'css/main.css');
+
     }
 
     public static function syncUser(WP_User $user, $password = '')
@@ -311,30 +343,6 @@ class Posse
     {
         //tidy up
     }
-}
-
-add_action('signup_extra_fields', 'myplugin_add_registration_fields');
-
-function myplugin_add_registration_fields()
-{
-
-    //Get and set any values already sent
-    $posse_user_role = (isset($_POST['posse_user_role'])) ? $_POST['posse_user_role'] : '';
-    ?>
-
-    <div class="form-group">
-        <label for="posse_user_role"><?php _e('Project role', 'myplugin_textdomain') ?>
-        </label>
-        <select type="text" name="posse_user_role" id="posse_user_role" class="input"
-                value="<?php echo esc_attr(stripslashes($posse_user_role)); ?>">
-            <?php foreach (Posse::getProjectRoles() as $role): ?>
-                <option value="<?php echo $role ?>"><?php echo $role ?></option>
-            <?php endforeach ?>
-        </select>
-    </div>
-
-
-<?php
 }
 
 /**

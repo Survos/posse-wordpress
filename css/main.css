@@ -1,0 +1,11 @@
+#container > .center-block {
+    width: 50%;
+}
+
+.navbar.navbar-default {
+    background-color: #333;
+}
+
+.widget-container {
+    border-top: 4px solid #666;
+}
