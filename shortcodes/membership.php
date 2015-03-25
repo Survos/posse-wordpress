@@ -29,7 +29,7 @@ function posse_membership($atts, $content = null)
             'user'       => $user,
             'wp_user'    => get_currentuserinfo(),
             'memberType' => $mt,
-            'member'     => ($mt && $user) ? $mt->memberQuery()->filterByUser($user)->findOne() : null, // missing $project!
+            'member'     => ($mt && is_object($user)) ? $mt->memberQuery()->filterByUser($user)->findOne() : null, // missing $project!
         ]
     ]);
 
