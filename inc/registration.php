@@ -7,7 +7,7 @@ function posse_logout(){
     if($userinfo){
     }
     // log out symfony user
-    Posse::logoutAll();
-    wp_redirect(home_url());
-    die();
+//    Posse::logoutAll();
+//    wp_redirect(home_url());
+//    die();
 }

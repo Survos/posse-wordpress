@@ -106,10 +106,10 @@ class Posse
      */
     public static function logoutAll()
     {
-        $token = new \Symfony\Component\Security\Core\Authentication\Token\AnonymousToken('fos_userbundle', 'anon.');
-        self::symfony('security.token_storage')->setToken($token);
-        $session = self::symfony('request_stack')->getCurrentRequest()->getSession();
-        $session->invalidate();
+//        $token = new \Symfony\Component\Security\Core\Authentication\Token\AnonymousToken('fos_userbundle', 'anon.');
+//        self::symfony('security.token_storage')->setToken($token);
+//        $session = self::symfony('request_stack')->getCurrentRequest()->getSession();
+//        $session->invalidate();
     }
 
     /**
@@ -169,15 +169,12 @@ class Posse
 
         $sfRequest = Request::createFromGlobals();
         $sfContainer->get('request_stack')->push($sfRequest);
-        $sfRequest->server->set('REQUEST_URI','/'); //hack
-        $sfResponse = $sfKernel->handle($sfRequest);
 
-        $session = $sfRequest->getSession();
-//        if (!$sfRequest->hasSession()) {
-//            $session = new \Symfony\Component\HttpFoundation\Session\Session();
-//            $sfRequest->setSession($session);
-//        }
-//        $sfResponse->send();
+        // hack I think, maybe could be achieved different way
+        // here we call symfony so it's starting session and handles request correctly
+        // this way we can use twig controller rendering etc later
+        $sfRequest->server->set('REQUEST_URI', '/public/wp.json');
+        $sfResponse = $sfKernel->handle($sfRequest);
 
         $site = get_blog_details();
         $parts = explode('.', $site->domain);
@@ -192,6 +189,7 @@ class Posse
         // try to authenticate user
         /** @var WP_User $current_user */
         $current_user = null;
+        $email = null;
         if (is_user_logged_in()) {
             $current_user = wp_get_current_user();
             $email = $current_user->get('user_email');
@@ -201,8 +199,10 @@ class Posse
 
         /** @var \Posse\UserBundle\Propel\User $symfonyUser */
         $symfonyUser = self::getSymfonyUser();
+
+        // if symfony user not logged in or different than our user then reauthenticate by email
         if (is_object($symfonyUser) && (!is_user_logged_in() || $symfonyUser->getEmail() != $email)) {
-//                self::getWpService()->authenticateUserByEmail($email);
+            //                self::getWpService()->authenticateUserByEmail($email);
             $wpuser = get_user_by('email', $symfonyUser->getEmail());
             if ($wpuser) {
                 //authenticate local user if found
@@ -210,10 +210,11 @@ class Posse
                 wp_redirect(home_url());
             }
         } else {
-            if (!$symfonyUser) {
+            // if logged in but symfony user logged out, then log out locally
+            if (!is_object($symfonyUser) && is_user_logged_in()) {
                 wp_logout();
+                wp_redirect(home_url());
             }
-//            wp_redirect(home_url());
         }
 
 //      $sfResponse->send();
@@ -227,7 +228,8 @@ class Posse
      *
      * @return mixed
      */
-    public static function symfony($id, $parameter = false, $def = '')
+    public
+    static function symfony($id, $parameter = false, $def = '')
     {
         static $container;
         if ($id instanceof ContainerInterface) {
