@@ -162,18 +162,19 @@ class Posse
             Debug::enable();
         }
 
-        $sfContainer->enterScope('request');
 
         /** @var \Posse\SurveyBundle\Services\ProjectManager $pm */
         $pm = $sfContainer->get('survos_survey.project_manager');
 
         $sfRequest = Request::createFromGlobals();
         $sfContainer->get('request_stack')->push($sfRequest);
+        $sfContainer->enterScope('request');
 
         // hack I think, maybe could be achieved different way
         // here we call symfony so it's starting session and handles request correctly
         // this way we can use twig controller rendering etc later
         $sfRequest->server->set('REQUEST_URI', '/public/wp.json');
+//        $sfRequest->server->set('REQUEST_URI', '/login');
         $sfResponse = $sfKernel->handle($sfRequest);
 
         $site = get_blog_details();
