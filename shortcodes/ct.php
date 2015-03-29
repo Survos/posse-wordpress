@@ -10,7 +10,7 @@ function posse_ct($atts, $content = null)
     extract(
         shortcode_atts(
             [
-                'id' => ''
+                'code' => ''
             ],
             $atts
         )
@@ -20,7 +20,9 @@ function posse_ct($atts, $content = null)
         'shortcode' => 'ct',
         'content'   => $content,
         'data'      => [
-            'ct' => Posse::getCt()
+            'ct' => Posse::getCt($code)
         ]
     ]);
+
+    return $return;
 }

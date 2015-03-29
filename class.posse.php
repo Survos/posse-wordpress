@@ -312,8 +312,7 @@ class Posse
     public static function getCt($code)
     {
         $ct = self::symfony('survos.clinical_trials')->getCt($code);
-        $html = self::symfony('templating')->render("SurvosClinicalTrialsBundle:Trial:_ct_view.html.twig", ['ct' => $ct]);
-        return $html;
+        return $ct;
     }
 
     /**
