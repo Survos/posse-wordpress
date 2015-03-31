@@ -12,7 +12,11 @@ jQuery(function ($) {
                 $iframe.data('loaded', 1);
                 console.log('iframe loaded');
             } else {
-                window.document.location.reload();
+                if ($iframe.data('reload-href')) {
+                    window.location.assign($iframe.data('reload-href'));
+                } else {
+                    window.document.location.reload();
+                }
             }
         });
     };
