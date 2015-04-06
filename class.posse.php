@@ -19,6 +19,7 @@ require_once(POSSE__PLUGIN_DIR.'shortcodes/register.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/survey.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/surveys.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/my-projects.php');
+require_once(POSSE__PLUGIN_DIR.'shortcodes/my-tracks.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/projects.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/project_attribute.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/login-form.php');
@@ -55,6 +56,7 @@ class Posse
 
         add_shortcode('project', 'posse_project_attribute');
         add_shortcode('my-projects', 'my_posse_projects');
+        add_shortcode('my-tracks', 'my_posse_tracks');
         add_shortcode('projects', 'posse_projects');
         add_shortcode('jobs', 'posse_jobs');
         add_shortcode('job', 'posse_job');
