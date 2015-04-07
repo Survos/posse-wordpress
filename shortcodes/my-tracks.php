@@ -16,7 +16,7 @@ function my_posse_tracks($atts, $content = '')
     );
 
     $user = Posse::getSymfonyUser();
-    if (!$mt = \Posse\SurveyBundle\Model\Type\MemberTypeQuery::create()->findOneByCode('personal')) // ack!
+    if (!$mt = \Posse\SurveyBundle\Model\Type\MemberTypeQuery::create()->findOneByCode('tracked')) // ack!
     {
         return sprintf("Shortcode error: invalid memberType %s", $code);
     }
