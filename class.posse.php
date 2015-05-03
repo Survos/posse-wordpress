@@ -57,6 +57,7 @@ class Posse
         add_shortcode('project', 'posse_project_attribute');
         add_shortcode('my-projects', 'my_posse_projects');
         add_shortcode('my-tracks', 'my_posse_tracks');
+        add_shortcode('my-assignments', 'my_posse_assignments');
         add_shortcode('projects', 'posse_projects');
         add_shortcode('jobs', 'posse_jobs');
         add_shortcode('job', 'posse_job');
