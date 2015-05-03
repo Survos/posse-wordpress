@@ -20,6 +20,7 @@ require_once(POSSE__PLUGIN_DIR.'shortcodes/survey.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/surveys.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/my-projects.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/my-tracks.php');
+require_once(POSSE__PLUGIN_DIR.'shortcodes/my-assignments.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/projects.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/project_attribute.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/login-form.php');

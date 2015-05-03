@@ -16,7 +16,7 @@ function my_posse_assignments($atts, $content = '')
     );
 
     $user = Posse::getSymfonyUser();
-    if (!$mt = \Posse\SurveyBundle\Model\Type\MemberTypeQuery::create()->findOneByCode('personal')) // should be an attribute
+    if (!$mt = \Posse\SurveyBundle\Model\Type\MemberTypeQuery::create()->findOneByCode($code='personal')) // should be an attribute
     {
         return sprintf("Shortcode error: invalid memberType %s", $code);
     }
