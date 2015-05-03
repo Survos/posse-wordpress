@@ -25,6 +25,7 @@ function my_posse_assignments($atts, $content = '')
         'shortcode' => 'my-assignments',
         'content'   => $content,
         'data'      => [
+            'category' => \Posse\SurveyBundle\Model\CategoryQuery::create()->findOneByCode('single'),  // should be an attribute!
             'memberType' => $mt,
             'member'     => ($mt && is_object($user)) ? $mt->memberQuery()->filterByUser($user)->findOne() : null, // missing $project!
             'user'    => $user,
