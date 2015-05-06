@@ -163,7 +163,7 @@ class Posse
         $sfContainer = $sfKernel->getContainer();
 
         if (true === $sfContainer->getParameter('kernel.debug', false)) {
-            Debug::enable();
+            Debug::enable(E_ALL ^ E_USER_DEPRECATED, false);
         }
 
 
