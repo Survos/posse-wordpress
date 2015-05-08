@@ -23,6 +23,8 @@ require_once(POSSE__PLUGIN_DIR.'shortcodes/my-tracks.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/my-assignments.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/projects.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/project_attribute.php');
+require_once(POSSE__PLUGIN_DIR.'shortcodes/posse_carto_map.php');
+
 require_once(POSSE__PLUGIN_DIR.'shortcodes/login-form.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/user-calendar.php');
 
@@ -55,6 +57,7 @@ class Posse
 //        add_filter('rewrite_rules_array', ['Posse', 'posse_theme_functionality_urls']);
         self::initSymfony();
 
+        add_shortcode('cartomap', 'posse_carto_map');
         add_shortcode('project', 'posse_project_attribute');
         add_shortcode('my-projects', 'my_posse_projects');
         add_shortcode('my-tracks', 'my_posse_tracks');
