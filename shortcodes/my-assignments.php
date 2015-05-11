@@ -8,7 +8,7 @@
 function my_posse_assignments($atts, $content = '')
 {
     extract(
-        $options = shortcode_atts(
+        $atts = shortcode_atts(
             [
                 'categorycode' => 'single'
             ],
@@ -21,13 +21,13 @@ function my_posse_assignments($atts, $content = '')
         'categoryCode' => 'single'
     ]);
     $atts = $resolver->resolve($options);
-    */
     $categoryCode = $atts['categorycode'];
+    */
 
     $user = Posse::getSymfonyUser();
-    if (!$category = \Posse\SurveyBundle\Model\CategoryQuery::create()->findOneByCode($categoryCode))
+    if (!$category = \Posse\SurveyBundle\Model\CategoryQuery::create()->findOneByCode($categorycode))
     {
-        return sprintf("Shortcode error: invalid categoryCode %s", $categoryCode);
+        return sprintf("Shortcode error: invalid categoryCode %s", $categorycode);
     }
 
     $return = Posse::renderTemplate('PosseServiceBundle:Wordpress:shortcode.html.twig', [
