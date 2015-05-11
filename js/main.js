@@ -21,7 +21,9 @@ jQuery(function ($) {
                 if ($iframe.data('reload-href')) {
                     window.location.assign($iframe.data('reload-href'));
                 } else {
-                    window.document.location.reload();
+                    console.log('iframe.contentWindow.location.href',iframe.contentWindow.location.href);
+                    window.location.assign(iframe.contentWindow.location.href);
+                    //window.document.location.reload();
                 }
             }
         });
