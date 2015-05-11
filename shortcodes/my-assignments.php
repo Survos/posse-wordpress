@@ -10,16 +10,19 @@ function my_posse_assignments($atts, $content = '')
     extract(
         $options = shortcode_atts(
             [
+                'categorycode' => 'single'
             ],
             $atts
         )
     );
+    /*
     $resolver = new \Symfony\Component\OptionsResolver\OptionsResolver();
     $resolver->setDefaults([
         'categoryCode' => 'single'
     ]);
     $atts = $resolver->resolve($options);
-    $categoryCode = $atts['categoryCode'];
+    */
+    $categoryCode = $atts['categorycode'];
 
     $user = Posse::getSymfonyUser();
     if (!$category = \Posse\SurveyBundle\Model\CategoryQuery::create()->findOneByCode($categoryCode))

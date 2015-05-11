@@ -7,20 +7,23 @@
  */
 function my_posse_waves($atts, $content = '')
 {
+
     extract(
-        $options = shortcode_atts(
+        shortcode_atts(
             [
+                'categorycode' => 'single'
             ],
             $atts
         )
     );
-    var_dump($options);
+    /*
     $resolver = new \Symfony\Component\OptionsResolver\OptionsResolver();
     $resolver->setDefaults([
-        'categoryCode' => 'single'
+        'categorycode' => 'single'
     ]);
-    $atts = $resolver->resolve($options);
-    $categoryCode = $atts['categoryCode'];
+    $atts = $resolver->resolve($atts);
+    */
+    $categoryCode = $atts['categorycode'];
 
     $user = Posse::getSymfonyUser();
     if (!$category = \Posse\SurveyBundle\Model\CategoryQuery::create()->findOneByCode($categoryCode))
