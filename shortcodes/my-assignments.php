@@ -27,7 +27,7 @@ function my_posse_assignments($atts, $content = '')
     $user = Posse::getSymfonyUser();
     if (!$category = \Posse\SurveyBundle\Model\CategoryQuery::create()->findOneByCode($categorycode))
     {
-        return sprintf("Shortcode error: invalid categoryCode %s", $categorycode);
+        return sprintf("Shortcode error: invalid categorycode %s", $categorycode);
     }
 
     $return = Posse::renderTemplate('PosseServiceBundle:Wordpress:shortcode.html.twig', [
