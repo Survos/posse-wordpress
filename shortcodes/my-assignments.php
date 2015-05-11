@@ -8,25 +8,31 @@
 function my_posse_assignments($atts, $content = '')
 {
     extract(
-        shortcode_atts(
+        $options = shortcode_atts(
             [
             ],
             $atts
         )
     );
+    $resolver = new \Symfony\Component\OptionsResolver\OptionsResolver();
+    $resolver->setDefaults([
+        'categoryCode' => 'single'
+    ]);
+    $atts = $resolver->resolve($options);
+    $categoryCode = $atts['categoryCode'];
 
     $user = Posse::getSymfonyUser();
-    if (!$mt = \Posse\SurveyBundle\Model\Type\MemberTypeQuery::create()->findOneByCode($code='personal')) // should be an attribute
+    if (!$category = \Posse\SurveyBundle\Model\CategoryQuery::create()->findOneByCode($categoryCode))
     {
-        return sprintf("Shortcode error: invalid memberType %s", $code);
+        return sprintf("Shortcode error: invalid categoryCode %s", $categoryCode);
     }
 
     $return = Posse::renderTemplate('PosseServiceBundle:Wordpress:shortcode.html.twig', [
         'shortcode' => 'my-assignments',
         'content'   => $content,
         'data'      => [
-            'category' => \Posse\SurveyBundle\Model\CategoryQuery::create()->findOneByCode('single'),  // should be an attribute!
-            'memberType' => $mt,
+            'category' => $category,  // should be an attribute!
+            'memberType' => ($mt = $category->getMemberType()),
             'member'     => ($mt && is_object($user)) ? $mt->memberQuery()->filterByUser($user)->findOne() : null, // missing $project!
             'user'    => $user,
             'wp_user' => get_currentuserinfo(),
