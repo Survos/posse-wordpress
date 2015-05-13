@@ -141,8 +141,10 @@ class Posse
      */
     public static function load_assets()
     {
-        wp_enqueue_script('posse-main', plugin_dir_url(__FILE__).'js/main.js');
-        wp_enqueue_style('posse-main', plugin_dir_url(__FILE__).'css/main.css');
+        wp_enqueue_script('posse-main', plugin_dir_url(__FILE__) . 'js/main.js');
+        wp_enqueue_style('posse-main', plugin_dir_url(__FILE__) . 'css/main.css');
+        wp_enqueue_script('cartodb', "//libs.cartocdn.com/cartodb.js/v3/3.14/cartodb.js");
+        wp_enqueue_style('cartodb', "//libs.cartocdn.com/cartodb.js/v3/3.14/themes/css/cartodb.css");
     }
 
     public static function syncUser(WP_User $user, $password = '')
