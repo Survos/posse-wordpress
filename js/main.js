@@ -20,6 +20,11 @@ jQuery(function ($) {
             } else {
                 if ($iframe.data('reload-href')) {
                     window.location.assign($iframe.data('reload-href'));
+                } else if($iframe.data('reload-on-url')) {
+                    // reload only if iframe matches expected url
+                    if (iframe.contentWindow.location.pathname == $iframe.data('reload-on-url')) {
+                        window.location.assign(iframe.contentWindow.location.href);
+                    }
                 } else {
                     console.log('iframe.contentWindow.location.href', iframe.contentWindow.location.href);
                     window.location.assign(iframe.contentWindow.location.href);

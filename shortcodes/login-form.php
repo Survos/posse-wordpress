@@ -2,7 +2,9 @@
 
 /**
  * return ct data
+ *
  * @param $atts
+ *
  * @return string
  */
 function posse_login_form($atts)
@@ -21,6 +23,7 @@ function posse_login_form($atts)
         'shortcode' => 'login',
         'content'   => null,
         'data'      => [
+            'pm' => Posse::getProjectManager()
         ]
     ]);
     return $return;

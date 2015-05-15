@@ -3,7 +3,9 @@
 
 /**
  * return  project form
+ *
  * @param $atts
+ *
  * @return string
  */
 function posse_register($atts)
@@ -23,6 +25,7 @@ function posse_register($atts)
         'shortcode' => 'register',
         'content'   => null,
         'data'      => [
+            'pm' => Posse::getProjectManager()
         ]
     ]);
 
