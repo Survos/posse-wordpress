@@ -2,7 +2,9 @@
 
 /**
  * return ct data
+ *
  * @param $atts
+ *
  * @return string
  */
 function posse_user($atts, $content = null)
@@ -15,12 +17,12 @@ function posse_user($atts, $content = null)
         )
     );
 
+    $user = Posse::getSymfonyUser();
     $return = Posse::renderTemplate('PosseServiceBundle:Wordpress:shortcode.html.twig', [
         'shortcode' => 'user',
         'content'   => $content,
         'data'      => [
-            'user'    => Posse::getSymfonyUser(),
-            'wp_user' => get_currentuserinfo(),
+            'user' => $user !== 'anon.' ? $user : null,
         ]
     ]);
 
