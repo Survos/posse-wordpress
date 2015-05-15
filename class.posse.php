@@ -74,6 +74,7 @@ class Posse
         add_shortcode('register', 'posse_register');
         add_shortcode('ct', 'posse_ct');
         add_shortcode('user', 'posse_user');
+        add_shortcode('twig', 'posse_user');
         add_shortcode('memberships', 'posse_memberships');
         add_shortcode('membership', 'posse_membership');
         add_shortcode('login-form', 'posse_login_form');
