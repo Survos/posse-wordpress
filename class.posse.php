@@ -17,6 +17,7 @@ require_once(POSSE__PLUGIN_DIR.'shortcodes/membership.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/job.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/jobs.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/register.php');
+require_once(POSSE__PLUGIN_DIR.'shortcodes/assignment.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/survey.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/surveys.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/my-projects.php');
@@ -71,6 +72,7 @@ class Posse
         add_shortcode('job', 'posse_job');
         add_shortcode('surveys', 'posse_surveys');
         add_shortcode('survey', 'posse_survey');
+        add_shortcode('assignment', 'posse_assignment');
         add_shortcode('register', 'posse_register');
         add_shortcode('ct', 'posse_ct');
         add_shortcode('user', 'posse_user');
