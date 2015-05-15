@@ -19,7 +19,7 @@ function posse_user($atts, $content = null)
         'shortcode' => 'user',
         'content'   => $content,
         'data'      => [
-            'user'    => Posse::getCurrentSymfonyUser(),
+            'user'    => Posse::getSymfonyUser(),
             'wp_user' => get_currentuserinfo(),
         ]
     ]);
