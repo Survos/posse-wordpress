@@ -21,7 +21,7 @@ jQuery(function ($) {
                 if ($iframe.data('reload-href')) {
                     window.location.assign($iframe.data('reload-href'));
                 } else {
-                    console.log('iframe.contentWindow.location.href',iframe.contentWindow.location.href);
+                    console.log('iframe.contentWindow.location.href', iframe.contentWindow.location.href);
                     window.location.assign(iframe.contentWindow.location.href);
                     //window.document.location.reload();
                 }
@@ -38,6 +38,12 @@ jQuery(function ($) {
             resizeIframe(b);
         });
     });
+
+    $('.map[data-url]').each(function (a, map) {
+        var $map = $(map);
+        cartodb.createVis(map, $map.data('url'));
+    });
+
 
     // $('.user-calendar').fullCalendar({});
 });

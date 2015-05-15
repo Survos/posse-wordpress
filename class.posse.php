@@ -9,6 +9,7 @@ require_once(POSSE__PLUGIN_DIR.'inc/comments.php');
 require_once(POSSE__PLUGIN_DIR.'inc/registration.php');
 require_once(POSSE__PLUGIN_DIR.'inc/post-types.php');
 require_once(POSSE__PLUGIN_DIR.'inc/custom-fields.php');
+require_once(POSSE__PLUGIN_DIR.'shortcodes/assignment.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/ct.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/user.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/memberships.php');
@@ -58,6 +59,7 @@ class Posse
 //        add_filter('rewrite_rules_array', ['Posse', 'posse_theme_functionality_urls']);
         self::initSymfony();
 
+        add_shortcode('assignment', 'posse_assignment');
         add_shortcode('cartomap', 'posse_carto_map');
         add_shortcode('project', 'posse_project_attribute');
         add_shortcode('my-projects', 'my_posse_projects');
@@ -72,6 +74,7 @@ class Posse
         add_shortcode('register', 'posse_register');
         add_shortcode('ct', 'posse_ct');
         add_shortcode('user', 'posse_user');
+        add_shortcode('twig', 'posse_user');
         add_shortcode('memberships', 'posse_memberships');
         add_shortcode('membership', 'posse_membership');
         add_shortcode('login-form', 'posse_login_form');
@@ -141,8 +144,10 @@ class Posse
      */
     public static function load_assets()
     {
-        wp_enqueue_script('posse-main', plugin_dir_url(__FILE__).'js/main.js');
-        wp_enqueue_style('posse-main', plugin_dir_url(__FILE__).'css/main.css');
+        wp_enqueue_script('posse-main', plugin_dir_url(__FILE__) . 'js/main.js');
+        wp_enqueue_style('posse-main', plugin_dir_url(__FILE__) . 'css/main.css');
+        wp_enqueue_script('cartodb', "//cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.14/cartodb.js");
+        wp_enqueue_style('cartodb', "//cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.14/themes/css/cartodb.css");
     }
 
     public static function syncUser(WP_User $user, $password = '')
