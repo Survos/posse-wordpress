@@ -15,6 +15,8 @@ function posse_assignment($atts, $content='')
             [
                 'membertypecode' => 'personal',
                 'waveid' => '0',
+                'exists_html' => "",
+                'new_html' => ""
             ],
             $atts
         )
@@ -28,6 +30,9 @@ function posse_assignment($atts, $content='')
     if (!$wave = \Posse\SurveyBundle\Model\Wave\WaveQuery::create()->findPk($waveid))
     {
         return sprintf("Shortcode error: Cannot find wave %s", $waveId);
+    }
+    if (empty($exists_html)) {
+        // $exists_html =
     }
 
     $category = $wave->getJob()->getCategory();
