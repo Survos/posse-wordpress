@@ -150,8 +150,8 @@ class Posse
     {
         wp_enqueue_script('posse-main', plugin_dir_url(__FILE__) . 'js/main.js');
         wp_enqueue_style('posse-main', plugin_dir_url(__FILE__) . 'css/main.css');
+        wp_enqueue_script('torque', "//cartodb.github.io/torque/dist/torque.full.js");
         wp_enqueue_script('cartodb', "//cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.14/cartodb.js");
-        wp_enqueue_script('cartodb', "//cartodb.github.io/torque/dist/torque.full.js");
 
         wp_enqueue_style('cartodb', "//cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.14/themes/css/cartodb.css");
     }
