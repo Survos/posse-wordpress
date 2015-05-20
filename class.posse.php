@@ -165,6 +165,21 @@ class Posse
 
     }
 
+    /**
+     * fixing magic quotes added by wordpress
+     * @param $content
+     *
+     * @return mixed
+     */
+    public static function fixContentQuotes($content)
+    {
+        $content = str_replace("‘",'"', $content);
+        $content = str_replace("’",'"', $content);
+        $content = str_replace("“",'"', $content);
+        $content = str_replace("”",'"', $content);
+        return $content;
+    }
+
     public static function initSymfony()
     {
         $loader = require_once __DIR__.'/../../../../app/bootstrap.php.cache';
@@ -256,10 +271,13 @@ class Posse
      *
      * @return mixed
      */
-    public
-    static function symfony($id, $parameter = false, $def = '')
+    public static function symfony($id = null, $parameter = false, $def = '')
     {
         static $container;
+
+        if (is_null($id)) {
+            return $container;
+        }
         if ($id instanceof ContainerInterface) {
             $container = $id;
             return;
@@ -273,6 +291,7 @@ class Posse
             return $container->get($id);
         }
     }
+
 
     public static function getParameter($param, $def = '')
     {

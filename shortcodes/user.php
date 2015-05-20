@@ -24,20 +24,19 @@ function posse_user($atts, $content = null)
     }
 
     $user = Posse::getSymfonyUser();
-    try {
-        $return = Posse::renderTemplate('PosseServiceBundle:Wordpress:shortcode.html.twig', [
-            'shortcode' => 'user',
-            'content'   => $content,
-            'data'      => [
-                'project' => $project,
-                'trackedMember' => $project->getTrackedMember($user),
-                'user' => $user !== 'anon.' ? $user : null,
-            ]
-        ]);
-    } catch (\Exception $e) {
-        dump($e->getMessage(), $content);
-        die();
+
+    if ($content) {
+        $content = html_entity_decode($content);
+        $content = Posse::fixContentQuotes($content);
     }
+
+    $return = Posse::renderTemplate('PosseServiceBundle:Wordpress:shortcode.html.twig', [
+        'shortcode' => 'user',
+        'content'   => $content,
+        'data'      => [
+            'user' => $user !== 'anon.' ? $user : null,
+        ]
+    ]);
 
     return $return;
 }
