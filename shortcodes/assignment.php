@@ -13,7 +13,7 @@ function posse_assignment($atts, $content='')
         shortcode_atts(
             [
                 'membertypecode' => 'personal',
-                'waveid' => '0',
+                'waveid' => "0",
                 'exists_text' => "",
                 'new_html' => "",
                 "a_class" => "btn btn-success",
@@ -31,7 +31,7 @@ function posse_assignment($atts, $content='')
     // todo: permissions
     if (!$wave = \Posse\SurveyBundle\Model\Wave\WaveQuery::create()->findPk($waveid))
     {
-        return sprintf("Shortcode error: Cannot find wave %s", $waveId);
+        return sprintf("Shortcode error: Cannot find wave [%s], %s", $waveid, json_encode($atts));
     }
     if (empty($exists_html)) {
         // $exists_html =
