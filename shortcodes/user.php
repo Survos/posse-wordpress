@@ -18,6 +18,12 @@ function posse_user($atts, $content = null)
     );
 
     $user = Posse::getSymfonyUser();
+
+    if ($content) {
+        $content = html_entity_decode($content);
+        $content = Posse::fixContentQuotes($content);
+    }
+
     $return = Posse::renderTemplate('PosseServiceBundle:Wordpress:shortcode.html.twig', [
         'shortcode' => 'user',
         'content'   => $content,
