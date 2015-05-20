@@ -18,6 +18,7 @@ require_once(POSSE__PLUGIN_DIR.'shortcodes/job.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/jobs.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/register.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/assignment.php');
+require_once(POSSE__PLUGIN_DIR.'shortcodes/iframe.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/survey.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/surveys.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/my-projects.php');
@@ -76,6 +77,7 @@ class Posse
         add_shortcode('register', 'posse_register');
         add_shortcode('ct', 'posse_ct');
         add_shortcode('user', 'posse_user');
+        add_shortcode('iframe', 'posse_iframe');
         add_shortcode('twig', 'posse_user');
         add_shortcode('memberships', 'posse_memberships');
         add_shortcode('membership', 'posse_membership');
@@ -148,7 +150,9 @@ class Posse
     {
         wp_enqueue_script('posse-main', plugin_dir_url(__FILE__) . 'js/main.js');
         wp_enqueue_style('posse-main', plugin_dir_url(__FILE__) . 'css/main.css');
+        wp_enqueue_script('torque', "//cartodb.github.io/torque/dist/torque.full.js");
         wp_enqueue_script('cartodb', "//cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.14/cartodb.js");
+
         wp_enqueue_style('cartodb', "//cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.14/themes/css/cartodb.css");
     }
 

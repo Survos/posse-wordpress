@@ -10,7 +10,8 @@ function my_posse_assignments($atts, $content = '')
     extract(
         $atts = shortcode_atts(
             [
-                'categorycode' => 'single'
+                'categorycode' => 'single',
+                'autocreate' => false
             ],
             $atts
         )
@@ -29,14 +30,30 @@ function my_posse_assignments($atts, $content = '')
     {
         return sprintf("Shortcode error: invalid categorycode %s", $categorycode);
     }
+    /** @var \Posse\SurveyBundle\Model\Project $project */
+    $project = Posse::getProjectManager()->getProject();
+
+    $mt = $category->getMemberType();
+    $member = $mt->memberQuery($project)->filterByUser($user)->findOne();
+
+
+    if (!$member and $autocreate) {
+        {
+            // this automatically creates a member if it doesn't exist
+            $member = $this->getProject()->getAutoCreateMembers($this->getUser(), $category);
+            $member
+                ->save();
+        }
+    }
 
     $return = Posse::renderTemplate('PosseServiceBundle:Wordpress:shortcode.html.twig', [
         'shortcode' => 'my-assignments',
         'content'   => $content,
         'data'      => [
             'category' => $category,  // should be an attribute!
-            'memberType' => ($mt = $category->getMemberType()),
-            'member'     => ($mt && is_object($user)) ? $mt->memberQuery()->filterByUser($user)->findOne() : null, // missing $project!
+            'memberType' => $mt,
+            'member'     => $member,
+            'project' => $project,
             'user'    => $user,
             'wp_user' => get_currentuserinfo(),
         ]
