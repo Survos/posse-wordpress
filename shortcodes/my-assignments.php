@@ -25,7 +25,11 @@ function my_posse_assignments($atts, $content = '')
     $categoryCode = $atts['categorycode'];
     */
 
-    $user = Posse::getSymfonyUser();
+    if (!$user = Posse::getSymfonyUser())
+    {
+        return "Please create an account to continue.";
+    }
+
     if (!$category = \Posse\SurveyBundle\Model\CategoryQuery::create()->findOneByCode($categorycode))
     {
         return sprintf("Shortcode error: invalid categorycode %s", $categorycode);
