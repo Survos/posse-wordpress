@@ -25,16 +25,19 @@ function my_posse_tracks($atts, $content = '')
     $mapArray = [];
     foreach ( explode(',', $maps) as $mapAddr) {
         list($name, $account) = explode('@', $mapAddr);
-        if (!$map = \Posse\SurveyBundle\Model\Carto\CartoMapQuery::create()
-            ->useCartoAccountQuery()
+        if ($name && $account)
+        {
+            if (!$map = \Posse\SurveyBundle\Model\Carto\CartoMapQuery::create()
+                ->useCartoAccountQuery()
                 ->filterByAccountName(trim($account))
-            ->endUse()
-            ->filterByName(trim($name))
-            ->findOne()
-        ) {
-            return sprintf("No map '%s' in carto account %s", $name, $account);
+                ->endUse()
+                ->filterByName(trim($name))
+                ->findOne()
+            ) {
+                return sprintf("No map '%s' in carto account %s", $name, $account);
+            }
+            $mapArray[] = $map;
         }
-        $mapArray[] = $map;
     }
 
     $return = Posse::renderTemplate('PosseServiceBundle:Wordpress:shortcode.html.twig', [
