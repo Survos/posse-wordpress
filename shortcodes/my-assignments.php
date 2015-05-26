@@ -25,9 +25,10 @@ function my_posse_assignments($atts, $content = '')
     $categoryCode = $atts['categorycode'];
     */
 
-    if (!$user = Posse::getSymfonyUser())
+    $user = Posse::getSymfonyUser();
+    if (!is_object($user)) // really trying to avoid 'anon'
     {
-        return "Please create an account to continue.";
+        return "Please log in or create an account to continue.";
     }
 
     if (!$category = \Posse\SurveyBundle\Model\CategoryQuery::create()->findOneByCode($categorycode))
