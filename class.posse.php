@@ -242,10 +242,10 @@ class Posse
             $wpuser = get_user_by('email', $symfonyUser->getEmail());
             if ($wpuser) {
                 //authenticate local user if found
-                if (self::symfony('security.authorization_checker')->isGranted('ROLE_OWNER') && !$wpuser->has_cap('administrator')) {
+                if (self::symfony('security.authorization_checker')->isGranted('PROJECT_OWNER') && !$wpuser->has_cap('administrator')) {
                     $wpuser->add_role('administrator');
                     wp_update_user($wpuser);
-                } elseif(!self::symfony('security.authorization_checker')->isGranted('ROLE_OWNER') && !$wpuser->has_cap('administrator'))  {
+                } elseif(!self::symfony('security.authorization_checker')->isGranted('PROJECT_OWNER') && !$wpuser->has_cap('administrator'))  {
                     $wpuser->remove_role('administrator');
                     wp_update_user($wpuser);
                 }
