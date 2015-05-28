@@ -22,7 +22,7 @@ function my_posse_tracks($atts, $content = '')
         return sprintf("Shortcode error: invalid memberType %s", $code);
     }
 
-    $mapArray = [];
+    $mapIds = $mapArray = [];
     foreach ( explode(',', $maps) as $mapAddr) {
         list($name, $account) = explode('@', $mapAddr);
         if ($name && $account)
@@ -37,6 +37,7 @@ function my_posse_tracks($atts, $content = '')
                 return sprintf("No map '%s' in carto account %s", $name, $account);
             }
             $mapArray[] = $map;
+            $mapIds[] = $map->getId();
         }
     }
 
@@ -48,6 +49,7 @@ function my_posse_tracks($atts, $content = '')
             'member'     => ($mt && is_object($user)) ? $mt->memberQuery()->filterByUser($user)->findOne() : null, // missing $project!
             'user'    => $user,
             'maps'    => $mapArray,
+            'mapIds' => $mapIds,
             'wp_user' => get_currentuserinfo(),
         ]
     ]);
