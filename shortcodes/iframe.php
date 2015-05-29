@@ -12,10 +12,10 @@ function posse_iframe($atts)
         shortcode_atts(
             [
                 'url' => 'http://www.survos.com',
-                'height' => '500px',
-                'width' => '100%',
-                'class' => '', // embed-responsive-item
-                'div_class' => 'embed-autosize'
+                'height' => '0',
+                'width' => '0',
+                'class' => ''
+                'div_class' => ''
             ],
             $atts
         )
