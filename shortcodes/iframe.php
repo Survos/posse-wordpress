@@ -11,7 +11,9 @@ function posse_iframe($atts)
     extract(
         shortcode_atts(
             [
-                'url' => 'http://www.google.com'
+                'url' => 'http://www.survos.com',
+                'height' => '500px',
+                'width' => '100%'
             ],
             $atts
         )
@@ -21,7 +23,9 @@ function posse_iframe($atts)
         'shortcode' => 'iframe',
         'content'   => null,
         'data'      => [
-            'url' => $url
+            'url' => $url,
+            'height' => $height,
+            'width' => $width
         ]
     ]);
 
