@@ -1,12 +1,5 @@
 <?php
 
-
-/**
- * return  project form
- * @param $atts
- * @return string
- */
-
 function posse_assignment($atts, $content='')
 {
     extract(
