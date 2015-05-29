@@ -14,7 +14,7 @@ function posse_iframe($atts)
                 'url' => 'http://www.survos.com',
                 'height' => '0',
                 'width' => '0',
-                'class' => ''
+                'class' => '',
                 'div_class' => ''
             ],
             $atts
