@@ -9,7 +9,6 @@ require_once(POSSE__PLUGIN_DIR.'inc/comments.php');
 require_once(POSSE__PLUGIN_DIR.'inc/registration.php');
 require_once(POSSE__PLUGIN_DIR.'inc/post-types.php');
 require_once(POSSE__PLUGIN_DIR.'inc/custom-fields.php');
-require_once(POSSE__PLUGIN_DIR.'shortcodes/assignment.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/ct.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/user.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/memberships.php');
@@ -18,6 +17,7 @@ require_once(POSSE__PLUGIN_DIR.'shortcodes/job.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/jobs.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/register.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/assignment.php');
+require_once(POSSE__PLUGIN_DIR.'shortcodes/assignments.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/iframe.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/survey.php');
 require_once(POSSE__PLUGIN_DIR.'shortcodes/surveys.php');
@@ -62,6 +62,7 @@ class Posse
         self::initSymfony();
 
         add_shortcode('assignment', 'posse_assignment');
+        add_shortcode('assignments', 'posse_assignments');
         add_shortcode('cartomap', 'posse_carto_map');
         add_shortcode('project', 'posse_project_attribute');
         add_shortcode('my-projects', 'my_posse_projects');
@@ -73,7 +74,6 @@ class Posse
         add_shortcode('job', 'posse_job');
         add_shortcode('surveys', 'posse_surveys');
         add_shortcode('survey', 'posse_survey');
-        add_shortcode('assignment', 'posse_assignment');
         add_shortcode('register', 'posse_register');
         add_shortcode('ct', 'posse_ct');
         add_shortcode('user', 'posse_user');
