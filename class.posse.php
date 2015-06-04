@@ -194,8 +194,10 @@ class Posse
         $sfContainer = $sfKernel->getContainer();
 
         if (true === $sfContainer->getParameter('kernel.debug', false)) {
-            Debug::enable(E_ALL ^ E_USER_DEPRECATED, false);
+//            Debug::enable(E_ALL ^ E_USER_DEPRECATED, false);
         }
+        error_reporting(0);
+
 
 
         /** @var \Posse\SurveyBundle\Services\ProjectManager $pm */
