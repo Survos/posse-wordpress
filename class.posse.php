@@ -196,8 +196,8 @@ class Posse
         if (true === $sfContainer->getParameter('kernel.debug', false)) {
 //            Debug::enable(E_ALL ^ E_USER_DEPRECATED, false);
         }
-        error_reporting(0);
 
+        error_reporting(0);
 
 
         /** @var \Posse\SurveyBundle\Services\ProjectManager $pm */
@@ -256,10 +256,15 @@ class Posse
             }
         } else {
             // if logged in but symfony user logged out, then log out locally
-            if (!is_object($symfonyUser) && is_user_logged_in()) {
+
+            if (!is_object($symfonyUser) && !is_main_site() && is_user_logged_in()) {
                 wp_logout();
                 wp_redirect(home_url());
             }
+        }
+
+        if (!current_user_can('administrator') && !is_admin()) {
+            show_admin_bar(false);
         }
 
 //      $sfResponse->send();
