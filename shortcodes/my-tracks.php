@@ -41,12 +41,13 @@ function my_posse_tracks($atts, $content = '')
         }
     }
 
+    $project = Posse::getProjectManager()->getProject();
     $return = Posse::renderTemplate('PosseServiceBundle:Wordpress:shortcode.html.twig', [
         'shortcode' => 'my-tracks',
         'content'   => $content,
         'data'      => [
             'memberType' => $mt,
-            'member'     => ($mt && is_object($user)) ? $mt->memberQuery()->filterByUser($user)->findOne() : null, // missing $project!
+            'member'     => ($mt && is_object($user)) ? $mt->memberQuery($project)->filterByUser($user)->findOne() : null,
             'user'    => $user,
             'maps'    => $mapArray,
             'mapIds' => $mapIds,
