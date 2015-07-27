@@ -6,7 +6,7 @@ jQuery(function ($) {
     console.log('posse plugin init (nothing loaded)');
 
     var resizeIframe = function (obj) {
-        var height = obj.contentWindow.document.body.scrollHeight + 'px';
+        var height = (obj.contentWindow.document.body.scrollHeight + 15) + 'px'; // add some pixels to avoid scrollbar
         obj.style.height = height;
         obj.parentNode.style.height = height;
     }
